@@ -9,7 +9,6 @@
 Tabela de conteúdos
 <!--ts-->
    * [Sobre o projeto](#-sobre-o-projeto)
-   * [Funcionalidades](#-funcionalidades)
    * [Layout](#-layout)
    * [Como executar o projeto](#-como-executar-o-projeto)
      * [Pré-requisitos](#pré-requisitos)
@@ -25,9 +24,7 @@ Sobre esse projeto tem desde o ciclo de vida Javascript, manipulação de listas
 
 Foram desenvolvidos conceitos como desenvolvimento orientado a testes, autenticação, autorização, documentação de serviços e gerenciamento de variáveis de ambiente (environments) de aplicações.
 
----
-
-## ⚙️ Funcionalidades
+#### ⚙️ Funcionalidades
 
 Foco desde básico Javascript, ao avaçado com node.js em ambiente de produção como:
 
@@ -92,12 +89,11 @@ $ cd node-br/<nome-da-pasta-desejada>
 As seguintes ferramentas foram usadas na construção do projeto:
 
 **Server**  
-* [Git](https://git-scm.com) 
-* [VSCode](https://code.visualstudio.com/)
-* [Javascript](https://developer.mozilla.org/pt-BR/docs/Aprender/JavaScript)
-* [Chorme](https://www.google.pt/intl/pt-PT/chrome/?brand=CHBD&gclid=CjwKCAjw1ej5BRBhEiwAfHyh1CqpdiJkRowiF7qVChVWvkTImra14_fVqzdcxXeYoznuxbgYMmtS9BoCP4oQAvD_BwE&gclsrc=aw.ds)
-* [Docker](https://docs.docker.com/engine/install/ubuntu/)
-* [Node na versão 10.19.0](https://nodejs.org/en/)
+* [Git](https://git-scm.com) para controle de versões
+* [VSCode](https://code.visualstudio.com/) para edição de código
+* [Javascript](https://developer.mozilla.org/pt-BR/docs/Aprender/JavaScript) para desenvolvimento
+* [Docker](https://docs.docker.com/engine/install/ubuntu/) para cricação de containers e execução de serviços
+* [Node na versão 10.19.0](https://nodejs.org/en/) para desenvolvimento
 
 **Utilitários**
 
