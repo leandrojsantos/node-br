@@ -49,11 +49,10 @@ class MongoDB extends ICrud {
     }
     async read(item = {}) {
         return this._collection.find(item, {
-            //qrcode
             originalUrl: 1,
             urlCode: 1,
             shortUrl: 1,
-            //file
+            file,
             name: 1,
             size: 1,
             key: 1,
