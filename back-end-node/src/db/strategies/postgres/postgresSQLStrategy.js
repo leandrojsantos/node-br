@@ -14,36 +14,26 @@ class PostgreSQLStrategy extends IDb {
       schema.name, schema.schema, schema.options,
     );
     await model.sync()
-    return model
+      return model
   }
 
   static async connect() {
     /**conexao com .env */
     const sequelize = new Sequelize(process.env.POSTGRES_URL, {
       quoteIdentifiers: false,
-      // deprecation: warning,
-      // operatorsAliases: false,
-      // disable: logging,
       logging: false,
-
-      ssl: process.env.SSL_DB,
-      dialectOptions: {
-        ssl: process.env.SSL_DB
-      }
-
     })
     console.log('POSTGRESQL OK');
-    return sequelize
+      return sequelize
   }
 
   async isConnected() {
     try {
-      // await this._connect();
       await this._connection.authenticate();
-      return true;
+        return true;
     } catch (error) {
       console.error('*****erro conexao POSTGRESQL!', error);
-      return false;
+        return false;
     }
   }
 
@@ -62,18 +52,13 @@ class PostgreSQLStrategy extends IDb {
 
   update(id, item, upsert = false) {
     const fn = upsert ? 'upsert' : 'update'
-    return this._db[fn](item, {
-      where: {
-        id
+      return this._db[fn](item, {
+      where: { id }});
       }
-    });
-  }
 
   delete(id) {
-    const query = id ? {
-      id
-    } : {};
-    return this._db.destroy({
+    const query = id ? { id } : {};
+      return this._db.destroy({
       where: query
     });
   }
