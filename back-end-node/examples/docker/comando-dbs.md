@@ -4,7 +4,7 @@
 ```bash
 # criar imagem do postgres
  
-   $ docker run \
+    docker run \
    --name postgres \
    -e POSTGRES_USER=admin \
    -e POSTGRES_PASSWORD=root \
@@ -15,7 +15,7 @@
 
 # cria interface do pg
  
-   $ docker run \
+    docker run \
    --name adminer \
    -p 8080:8080 \
    --link postgres:postgres \
@@ -35,7 +35,7 @@
 ```bash
 # criar imagem do mongo
  
-   $ docker run \
+    docker run \
    --name mongodb \
    -p 27017:27017 \
    -e MONGO_INITDB_ROOT_USERNAME=admin \
@@ -45,7 +45,7 @@
 
 # cria interface do mongoclient em localhost:3000 
  
-   $ docker run \
+    docker run \
    --name mongoclient \
    -p 3000:3000 \
    --link mongodb:mongodb \
@@ -54,7 +54,7 @@
 
 # cria interface mongoclient com usuário inicial sendo através dele a permissão para cria outros -u nome_usuario -p senha_do_usuario
  
-   $ docker exec -it mongodb \
+    docker exec -it mongodb \
    mongo --host localhost -u admin -p root \
    --authenticationDatabase admin \
    --eval "db.getSiblingDB('mdb') \
@@ -100,11 +100,11 @@
 ----------------
 ### REDIS
 ```bash
-   $ docker pull redis # cria imagem
+    docker pull redis # cria imagem
 
-   $ docker run -d -p 6379:6379 --name redis redis # seta nome e porta a imagem
+    docker run -d -p 6379:6379 --name redis redis # seta nome e porta a imagem
 
-   $ docker exec -it redis sh # iniciar redis-cli
+    docker exec -it redis sh # iniciar redis-cli
 
-   $ 127.0.0.1:6379> ping # teste se está ok
+    127.0.0.1:6379> ping # teste se está ok
 ```
