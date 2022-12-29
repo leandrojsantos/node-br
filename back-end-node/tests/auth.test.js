@@ -6,17 +6,17 @@ const PostgresDB = require('./../src/db/strategies/postgres/postgresSQLStrategy'
 
 let app = {}
 const USER = {
-    username: 'seu madruga',
+    username: 'test c',
     password: 'auth'
 }
 
 const USER_DB = {
     ...USER,
+    //hash significado 'auth' = '$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS'
     password: '$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS'
 }
 
-
-describe('*****auth.test.suite*****', function () {
+describe('*****auth.test*****', function () {
     this.beforeAll(async () => {
         app = await api
 
@@ -41,12 +41,11 @@ describe('*****auth.test.suite*****', function () {
             method: 'POST',
             url: '/login',
             payload: {
-                username: 'teste',
+                username: 'teste f',
                 password: '123'
             }
         });
         const statusCode = result.statusCode
-
         assert.deepEqual(statusCode, 401)
         assert.deepEqual(JSON.parse(result.payload).error, "Unauthorized")
     })

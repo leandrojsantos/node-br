@@ -1,11 +1,11 @@
 const assert = require('assert')
-const MongoDb = require('../src/db/strategies/mongodb/mongoDbStrategy')
 const HeroSchema = require('../src/db/strategies/mongodb/schemas/heroSchema')
+const MongoDb = require('../src/db/strategies/mongodb/mongoDbStrategy')
 const Context = require('../src/db/strategies/base/contextStrategy')
 
 const MOCK_HEROI_CADASTRAR = {
-    nome: 'P Negro',
-    poder: 'f'
+    nome: 'teste j',
+    poder: 'visao'
 };
 
 const MOCK_HEROI_ATUALIZAR = {
@@ -15,11 +15,10 @@ const MOCK_HEROI_ATUALIZAR = {
 let MOCK_HEROI_ATUALIZAR_ID = '';
 let context = {}
 
-describe('*****mongodbStartegy.test.suite*****', function () {
+describe('*****mongodbStartegy.test*****', function () {
     this.beforeAll(async () => {
         const connection = MongoDb.connect()
         context = new Context(new MongoDb(connection, HeroSchema))
-
         const result = await context.create(MOCK_HEROI_ATUALIZAR)
         MOCK_HEROI_ATUALIZAR_ID = result._id
     })
@@ -42,7 +41,7 @@ describe('*****mongodbStartegy.test.suite*****', function () {
     })
 
     it('t4 - atualizar', async () => {
-        const result = await context.update(MOCK_HEROI_ATUALIZAR_ID, { poder: 'Laço'})
+        const result = await context.update(MOCK_HEROI_ATUALIZAR_ID, { poder: 'rapidez'})
         assert.deepEqual(result.nModified, 1)
     })
     

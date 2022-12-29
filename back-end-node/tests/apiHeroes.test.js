@@ -1,9 +1,15 @@
 const assert = require('assert')
 const api = require('./../api')
+const HeroSchema = require('../src/db/strategies/mongodb/schemas/heroSchema')
+const MongoDB = require('../src/db/strategies/mongodb/mongoDbStrategy')
+const Context = require('../src/db/strategies/base/contextStrategy')
+
 let app = {}
-let MOCK_ID = ``
-let MOCK_TOKEN = ``
+let MOCK_ID = `mock`
+//hash MOCK_TOKEN = auth
+let MOCK_TOKEN = `$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS`
 const headers = { Authorization: MOCK_TOKEN }
+
 
 function cadastrar() { return app.inject({
         method: 'POST',
@@ -16,7 +22,7 @@ function cadastrar() { return app.inject({
     });
 }
 
-describe('*****apiHeroes.test.suite*****', function () {
+describe('*****apiHeroes.test*****', function () {
     this.beforeAll(async () => {
         app = await api
         const result = await cadastrar()
@@ -47,8 +53,7 @@ describe('*****apiHeroes.test.suite*****', function () {
     it('t3 - cadastrar /herois', async () => {
         const result = await cadastrar()
         assert.deepEqual(result.statusCode, 200)
-        assert.deepEqual(JSON.parse(result.payload).nome, `test`)
-
+        assert.deepEqual(JSON.parse(result.payload).nome, 'test a')
     })
 
     it('t4 - não deve cadastrar com payload errado', async () => {
@@ -57,9 +62,8 @@ describe('*****apiHeroes.test.suite*****', function () {
             url: '/herois',
             headers,
             payload: {
-                name: 'test',
-                poder: 'paciencia'
-                
+                name: 'testtt',
+                poder: 'paciencia'   
             }
         })
         const payload = JSON.parse(result.payload)
@@ -73,13 +77,12 @@ describe('*****apiHeroes.test.suite*****', function () {
             url: `/herois/${MOCK_ID}`,
             headers,
             payload: {
-                nome: 'Canário Negro',
-                poder: 'Grito'
+                nome: 'mock',
+                poder: 'auth'
             }
         })
         assert.deepEqual(result.statusCode, 200)
         assert.deepEqual(JSON.parse(result.payload).nModified, 1)
-
     })
     
     it('t6 - remover /herois/{id}', async () => {

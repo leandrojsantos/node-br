@@ -1,26 +1,24 @@
 const assert = require('assert')
 const api = require('../api')
+const UserSchema = require('../src/db/strategies/postgres/schemas/userSchema')
 const Context = require('../src/db/strategies/base/contextStrategy')
 const PostgresDB = require('../src/db/strategies/postgres/postgresSQLStrategy')
-const UserSchema = require('../src/db/strategies/postgres/schemas/userSchema')
-
 const PasswordHelper = require('../src/helpers/passwordHelper');
 
 let app = {}
 
 const USER = {
-    username: 'mock',
+    username: 'test b',
     password: 'auth'
 }
 
 const USER_DB = {
     ...USER,
+    //hash significado 'auth' = '$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS'
     password: '$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS'
 }
 
-//auth => hash '$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS'
-
-describe('****apiUser.test.suite****', function () {
+describe('****apiUser.test****', function () {
     this.beforeAll(async () => {
         app = await api
 
@@ -50,5 +48,4 @@ describe('****apiUser.test.suite****', function () {
         //500 demostra username ja existe no db
         assert.ok(JSON.parse(result.payload).token.length > 10)
     })
-
 })
