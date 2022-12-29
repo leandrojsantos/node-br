@@ -20,7 +20,7 @@ const USER_DB = {
 
 //auth => hash '$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS'
 
-describe('****Api User Suite de Testes****', function () {
+describe('****apiUser.test.suite****', function () {
     this.beforeAll(async () => {
         app = await api
 
@@ -30,15 +30,13 @@ describe('****Api User Suite de Testes****', function () {
         await postgresModel.update(null, USER_DB, true)
     })
 
-
-    it('T1 gerar Hash', async () => {
-        
+    it('t1 - gerar Hash', async () => {
         const result = await PasswordHelper.hashPassword(USER.password);
         console.log('result', result)
         assert.ok(result.length > 10);
     });
 
-    it('T2 add User', async () => {
+    it('t2 - add User', async () => {
         const result = await app.inject({
             method: 'POST',
             url: '/login',

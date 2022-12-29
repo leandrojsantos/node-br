@@ -2,15 +2,15 @@ const assert = require('assert')
 const api = require('./../api')
 let app = {}
 let MOCK_ID = ""
-let MOCK_TOKEN = ""
+let MOCK_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Inh1eGFkYXNpbHZhIiwiaWF0IjoxNTQyNzI4MzQ0fQ.JvBOZa7yXds4ktQ7HvNRYO6-s1mbU7AKTJP9G2ghje4"
 const headers = {
     Authorization: MOCK_TOKEN
 }
 
-function cadastrar() {
-    return app.inject({
-        method: 'POST',
-        url: '/herois',
+function cadastrar() { return app.inject({
+            method: 'POST',
+            url: '/herois',
+            
         headers,
         payload: {
             nome: 'Flash',
@@ -19,14 +19,14 @@ function cadastrar() {
     });
 }
 
-
-describe('*****API Heroes test suite', function () {
+describe('*****apiHeroes.test.suite*****', function () {
     this.beforeAll(async () => {
         app = await api
         const result = await cadastrar()
         MOCK_ID = JSON.parse(result.payload)._id
     })
-    it('1 não deve listar herois sem um token', async () => {
+
+    it('t1 - não deve listar herois sem um token', async () => {
         const result = await app.inject({
             method: 'GET',
             url: '/herois', 
@@ -37,7 +37,7 @@ describe('*****API Heroes test suite', function () {
         assert.deepEqual(JSON.parse(result.payload).error, "Unauthorized")
     })
 
-    it('2 listar a rota /heroes', async () => {
+    it('t2 - listar /heroes', async () => {
         const result = await app.inject({
             method: 'GET',
             url: '/herois',
@@ -49,14 +49,14 @@ describe('*****API Heroes test suite', function () {
         assert.ok(Array.isArray(JSON.parse(result.payload)))
     })
 
-    it('3 cadastrar na rota /herois', async () => {
+    it('t3 - cadastrar /herois', async () => {
         const result = await cadastrar()
         assert.deepEqual(result.statusCode, 200)
         assert.deepEqual(JSON.parse(result.payload).nome, "Flash")
 
     })
 
-    it('4 não deve cadastrar com payload errado', async () => {
+    it('t4 - não deve cadastrar com payload errado', async () => {
         const result = await app.inject({
             method: 'POST',
             url: '/herois',
@@ -69,7 +69,8 @@ describe('*****API Heroes test suite', function () {
         assert.deepEqual(result.statusCode, 400)
         assert.ok(payload.message.search('"nome" is required') !== -1)
     })
-    it('5 atualizar na rota /herois/{id}', async () => {
+
+    it('t5 - atualizar /herois/{id}', async () => {
         const result = await app.inject({
             method: 'PATCH',
             url: `/herois/${MOCK_ID}`,
@@ -83,7 +84,8 @@ describe('*****API Heroes test suite', function () {
         assert.deepEqual(JSON.parse(result.payload).nModified, 1)
 
     })
-    it('6 remover na rota /herois/{id}', async () => {
+    
+    it('t6 - remover /herois/{id}', async () => {
         const result = await app.inject({
             method: 'DELETE',
             url: `/herois/${MOCK_ID}`,

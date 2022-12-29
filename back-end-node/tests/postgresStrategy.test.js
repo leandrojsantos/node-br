@@ -1,68 +1,62 @@
-const {
-  equal,
-  deepEqual,
-  ok
-} = require('assert');
-
+const { equal, deepEqual, ok } = require('assert');
 const PostgresStrategy = require('../src/db/strategies/postgres/postgresSQLStrategy');
-const UserSchema = require('../src/db/strategies/postgres/schemas/userSchema')
-const Context = require('../src/db/strategies/base/contextStrategy')
-const nanoid = require('nanoid')
+const HeroiSchema = require('../src/db/strategies/postgres/schemas/heroiSchema');
+const Context = require('../src/db/strategies/base/contextStrategy');
 
-const MOCK_USER_CADASTRAR = {
-  username:  nanoid(7),
-  password: '8m6a7OFeQYE5LWmuJgPtFlvHveO5fN.kfsfhAAsbd8gM.DSAghrWw'
-}
-const MOCK_USER_ATUALIZAR = {
-  username: nanoid(7),
-  password: nanoid(7)
-}
+const MOCK_HEROI_CADASTRAR = {
+  nome: 'Gaviao Negro',
+  poder: 'flexas'
+};
+
+const MOCK_HEROI_ATUALIZAR = {
+  nome: 'Mulher Gavião',
+  poder: 'grito'
+};
 
 let context = {}
 
-describe('****Postgres Strategy Suite de Testes****', function () {
+describe('*****postgresStrategy.test.suite*****', function () {
   this.timeout(Infinity);
   before(async () => {
     const connection = await PostgresStrategy.connect()
-    const model = await PostgresStrategy.defineModel(connection, UserSchema)
+    const model = await PostgresStrategy.defineModel(connection, HeroiSchema)
     context = new Context(new PostgresStrategy(connection, model));
 
     await context.delete();
-    await context.create(MOCK_USER_CADASTRAR);
-    await context.create(MOCK_USER_ATUALIZAR);
+    await context.create(MOCK_HEROI_CADASTRAR);
+    await context.create(MOCK_HEROI_ATUALIZAR);
   });
 
-  it('T1 conexao', async () => {
+  it('t1 - PostgresSQL connection', async () => {
     const result = await context.isConnected();
     equal(result, true);
   });
-  
-  //verificar 
-  // it('T2 cadastra', async () => {
-  //   const result = await context.create(MOCK_USER_CADASTRAR);
-  //   delete result.dataValues.id;
-  //   deepEqual(result.dataValues, MOCK_USER_CADASTRAR);
-  // });
 
-  it('T3 listar', async () => {
-    const [result] = await context.read(MOCK_USER_CADASTRAR);
-    delete result.id;
-    deepEqual(result, MOCK_USER_CADASTRAR);
+  it('t2 - cadastrar', async () => {
+    const result = await context.create(MOCK_HEROI_CADASTRAR);
+    delete result.dataValues.id;
+    deepEqual(result.dataValues, MOCK_HEROI_CADASTRAR);
   });
 
-  it('T4 atualiza', async () => {
+  it('t3 - listar', async () => {
+    const [result] = await context.read(MOCK_HEROI_CADASTRAR);
+    delete result.id;
+    deepEqual(result, MOCK_HEROI_CADASTRAR);
+  });
+
+  it('t4 - atualizar', async () => {
     const [result] = await context.read({});
 
     const novoItem = {
-      ...MOCK_USER_CADASTRAR,
-      username: 'Homen de Ferro',
+      ...MOCK_HEROI_CADASTRAR,
+      nome: 'Mulher Maravilha',
     };
     const [update] = await context.update(result.id, novoItem);
 
     deepEqual(update, 1);
   });
 
-  it('T5 remove', async () => {
+  it('t5 - remover', async () => {
     const [item] = await context.read({});
     const result = await context.delete(item.id);
     deepEqual(result, 1);

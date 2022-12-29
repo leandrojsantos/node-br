@@ -1,24 +1,32 @@
+//1o criar test 
+//2o criar passwordHelper
+//3o gerar senha e guardar
+//4o criar model de usuario
+//5o adicionar chamada em api.js
+//6o adicionar no construtor de auth receber o model
+//7o criar logica na route
+//8o adicionar upsert no context e postgresStrategy
+//9o adicionar no arquivo postgres.sql o script para criar a tabela
+
 const assert = require('assert')
 const api = require('../api')
-const Context = require('../src/db/strategies/base/contextStrategy')
-const PostgresDB = require('../src/db/strategies/postgres/postgresSQLStrategy')
-const UserSchema = require('../src/db/strategies/postgres/schemas/userSchema')
+const Context = require('./../src/db/strategies/base/contextStrategy')
+const PostgresDB = require('./../src/db/strategies/postgres/postgresSQLStrategy')
+const UserSchema = require('./../src/db/strategies/postgres/schemas/userSchema')
 
 let app = {}
-
 const USER = {
-    username: 'test',
-    password: 'auth',
+    username: 'chaves',
+    password: '321123'
 }
 
 const USER_DB = {
     ...USER,
-    password: '$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS'
+    password: '$2b$04$SdlyEJsy.o5UgsgVr5csrOJ.ralZVyPviGH80BOb0zJCTSis30RB8Ba'
 }
 
-//auth => hash '$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS'
 
-describe('****Auth Suite de Testes****', function () {
+describe('*****auth.test.suite*****', function () {
     this.beforeAll(async () => {
         app = await api
 
@@ -27,33 +35,29 @@ describe('****Auth Suite de Testes****', function () {
         const postgresModel = new Context(new PostgresDB(connectionPostgres, model));
         await postgresModel.update(null, USER_DB, true)
     })
-
-    it('T1 obter Token', async () => {
-        const result = await app.inject({
-            method: 'POST',
+    
+    it('t1 - deve obter um token', async () => {
+        const result = await app.inject({ method: 'POST',
             url: '/login',
             payload: USER
         });
         const statusCode = result.statusCode
-        const dados = JSON.parse(result.payload)
-        console.log(`dados`, dados);
-
         assert.deepEqual(statusCode, 200)
         assert.ok(JSON.parse(result.payload).token.length > 10)
     })
 
-    it('T2 login Errado', async () => {
+    it('t2 - deve retornar não autorizado ao tentar obter um token com login errado', async () => {
         const result = await app.inject({
             method: 'POST',
             url: '/login',
             payload: {
-                username: 'testeUsername',
-                password: 'abc'
+                username: 'teste',
+                password: '123'
             }
         });
         const statusCode = result.statusCode
 
-        assert.deepEqual(statusCode, 400)
-        assert.deepEqual(JSON.parse(result.payload).error, 'Bad Request')
+        assert.deepEqual(statusCode, 401)
+        assert.deepEqual(JSON.parse(result.payload).error, "Unauthorized")
     })
 })
