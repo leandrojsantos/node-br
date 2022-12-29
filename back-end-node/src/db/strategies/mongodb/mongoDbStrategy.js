@@ -21,7 +21,6 @@ class MongoDB extends ICrud {
         if (state !== 'Conectando') return state
         await new Promise(resolve => setTimeout(resolve, 1000))
             return STATUS[this._connection.readyState]
-
     }
 
     static connect() {

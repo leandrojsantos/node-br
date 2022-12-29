@@ -4,12 +4,12 @@ const HeroSchema = require('../src/db/strategies/mongodb/schemas/heroSchema')
 const Context = require('../src/db/strategies/base/contextStrategy')
 
 const MOCK_HEROI_CADASTRAR = {
-    nome: 'Gaviao Negro',
-    poder: 'flexas'
+    nome: 'P Negro',
+    poder: 'f'
 };
 
 const MOCK_HEROI_ATUALIZAR = {
-    nome: 'Mulher Maravilha',
+    nome: 'hulk',
     poder: 'força'
 };
 let MOCK_HEROI_ATUALIZAR_ID = '';
@@ -37,16 +37,12 @@ describe('*****mongodbStartegy.test.suite*****', function () {
 
     it('t3 - listar', async () => {
         const [{ nome, poder}] = await context.read({ nome: MOCK_HEROI_CADASTRAR.nome})
-        const result = {
-            nome, poder
-        }
+        const result = { nome, poder }
         assert.deepEqual(result, MOCK_HEROI_CADASTRAR)
     })
 
     it('t4 - atualizar', async () => {
-        const result = await context.update(MOCK_HEROI_ATUALIZAR_ID, {
-            poder: 'Laço'
-        })
+        const result = await context.update(MOCK_HEROI_ATUALIZAR_ID, { poder: 'Laço'})
         assert.deepEqual(result.nModified, 1)
     })
     

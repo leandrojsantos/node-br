@@ -1,19 +1,16 @@
 const assert = require('assert')
 const api = require('./../api')
 let app = {}
-let MOCK_ID = ""
-let MOCK_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Inh1eGFkYXNpbHZhIiwiaWF0IjoxNTQyNzI4MzQ0fQ.JvBOZa7yXds4ktQ7HvNRYO6-s1mbU7AKTJP9G2ghje4"
-const headers = {
-    Authorization: MOCK_TOKEN
-}
+let MOCK_ID = ``
+let MOCK_TOKEN = ``
+const headers = { Authorization: MOCK_TOKEN }
 
 function cadastrar() { return app.inject({
-            method: 'POST',
-            url: '/herois',
-            
+        method: 'POST',
+        url: '/herois',  
         headers,
         payload: {
-            nome: 'Flash',
+            nome: 'teste a',
             poder: 'Velocidade'
         }
     });
@@ -32,7 +29,6 @@ describe('*****apiHeroes.test.suite*****', function () {
             url: '/herois', 
         })
         const statusCode = result.statusCode
-
         assert.deepEqual(statusCode, 401)
         assert.deepEqual(JSON.parse(result.payload).error, "Unauthorized")
     })
@@ -44,7 +40,6 @@ describe('*****apiHeroes.test.suite*****', function () {
             headers
         })
         const statusCode = result.statusCode
-
         assert.deepEqual(statusCode, 200)
         assert.ok(Array.isArray(JSON.parse(result.payload)))
     })
@@ -52,7 +47,7 @@ describe('*****apiHeroes.test.suite*****', function () {
     it('t3 - cadastrar /herois', async () => {
         const result = await cadastrar()
         assert.deepEqual(result.statusCode, 200)
-        assert.deepEqual(JSON.parse(result.payload).nome, "Flash")
+        assert.deepEqual(JSON.parse(result.payload).nome, `test`)
 
     })
 
@@ -62,7 +57,9 @@ describe('*****apiHeroes.test.suite*****', function () {
             url: '/herois',
             headers,
             payload: {
-                NAME: 'Flash'
+                name: 'test',
+                poder: 'paciencia'
+                
             }
         })
         const payload = JSON.parse(result.payload)

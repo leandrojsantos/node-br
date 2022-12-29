@@ -43,19 +43,20 @@ async function main() {
     await app.register([ HapiJwt, Inert, Vision,  { plugin: HapiSwagger,  options: swaggerConfig }])
     
     app.auth.strategy('jwt', 'jwt', {
-        key: MINHA_CHAVE_SECRETA,
-        validate: (dado, request) => {
-            return { isValid: true }
-        }
+        key: JWT_KEY_ROOT,
+        options: { expiresIn: 30, algorithms: ['HS256']},
+        validate: (dado, request) => {return { isValid: true }        }
     })
 
     app.auth.default('jwt')
 
     app.route([
-        //rotas do mongo 
+        //rotas do mongodb
         ...mapRoutes(new HeroRoutes(mongoDb), HeroRoutes.methods()),
+        
         //rotas do postgres
-        ...mapRoutes(new AuthRoutes(MINHA_CHAVE_SECRETA, postgresModel), AuthRoutes.methods())
+        ...mapRoutes(new UserRoutes( postgresModel), UserRoutes.methods()),
+        ...mapRoutes(new AuthRoutes(JWT_KEY_ROOT, postgresModel), AuthRoutes.methods())
     ])
 
     await app.start()

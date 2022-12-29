@@ -1,28 +1,18 @@
-//1o criar test 
-//2o criar passwordHelper
-//3o gerar senha e guardar
-//4o criar model de usuario
-//5o adicionar chamada em api.js
-//6o adicionar no construtor de auth receber o model
-//7o criar logica na route
-//8o adicionar upsert no context e postgresStrategy
-//9o adicionar no arquivo postgres.sql o script para criar a tabela
-
 const assert = require('assert')
 const api = require('../api')
+const UserSchema = require('./../src/db/strategies/postgres/schemas/userSchema')
 const Context = require('./../src/db/strategies/base/contextStrategy')
 const PostgresDB = require('./../src/db/strategies/postgres/postgresSQLStrategy')
-const UserSchema = require('./../src/db/strategies/postgres/schemas/userSchema')
 
 let app = {}
 const USER = {
-    username: 'chaves',
-    password: '321123'
+    username: 'seu madruga',
+    password: 'auth'
 }
 
 const USER_DB = {
     ...USER,
-    password: '$2b$04$SdlyEJsy.o5UgsgVr5csrOJ.ralZVyPviGH80BOb0zJCTSis30RB8Ba'
+    password: '$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS'
 }
 
 
@@ -46,7 +36,7 @@ describe('*****auth.test.suite*****', function () {
         assert.ok(JSON.parse(result.payload).token.length > 10)
     })
 
-    it('t2 - deve retornar não autorizado ao tentar obter um token com login errado', async () => {
+    it('t2 - deve retornar um token com login errado', async () => {
         const result = await app.inject({
             method: 'POST',
             url: '/login',

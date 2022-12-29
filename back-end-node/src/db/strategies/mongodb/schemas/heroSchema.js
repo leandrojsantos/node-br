@@ -14,5 +14,4 @@ const heroiSchema = new Mongoose.Schema({
     }
 })
 
-//mocha workaround
 module.exports = Mongoose.models.herois || Mongoose.model('herois', heroiSchema)

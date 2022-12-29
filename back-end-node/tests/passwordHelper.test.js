@@ -4,11 +4,11 @@ const PasswordHelper = require('../src/helpers/passwordHelper');
 const SENHA = 'erick@32123';
 const HASH = '$2b$04$nJuOS9YZH9FpsKTOSh2IPOZUW9IF83bo54FE2L/rO/Xzrl.pS/qV2'
 
-describe('*****passwordHelper.test.siute******', function () {
+describe('*****passwordHelper.test******', function () {
     
     it('t1 - deve gerar um hash a partir de uma senha', async () => {
-        //const result = await PasswordHelper.hashPassword(SENHA);
-        const result = await PasswordHelper.hashPassword('321123');
+        const result = await PasswordHelper.hashPassword(SENHA);
+        //const result = await PasswordHelper.hashPassword('321123');
         console.log('result', result)
         assert.ok(result.length > 10);
     });
