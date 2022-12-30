@@ -1,3 +1,7 @@
+//strictQuery usada para remover DeprecationWarning no loogin
+const mongoose = require('mongoose');
+mongoose.set('strictQuery', false);
+
 const assert = require('assert')
 const api = require('./../api')
 const HeroSchema = require('../src/db/strategies/mongodb/schemas/heroSchema')
