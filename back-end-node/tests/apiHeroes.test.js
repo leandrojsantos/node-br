@@ -66,7 +66,7 @@ describe('*****apiHeroes.test*****', function () {
             url: '/herois',
             headers,
             payload: {
-                name: 'testtt',
+                nome: 'testtt',
                 poder: 'paciencia'   
             }
         })

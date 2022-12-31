@@ -41,8 +41,8 @@ class MongoDB extends ICrud {
     }
 
     async read(item = {}) {
-        return this._collection.find(item, {
-            name: 1,
+        return this._collection.find(item, {    
+            nome: 1,
             poder: 1,
             insertedAt: 1
         })
