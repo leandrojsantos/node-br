@@ -1,3 +1,7 @@
+//strictQuery usada para remover DeprecationWarning no loogin
+const mongoose = require('mongoose');
+mongoose.set('strictQuery', false);
+
 const assert = require('assert')
 const api = require('../api')
 const UserSchema = require('./../src/db/strategies/postgres/schemas/userSchema')
@@ -13,13 +17,13 @@ const USER = {
 const USER_DB = {
     ...USER,
     //hash significado 'auth' = '$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS'
+    username: 'user a',
     password: '$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS'
 }
 
 describe('*****auth.test*****', function () {
-    this.beforeAll(async () => {
+    this.beforeEach(async () => {
         app = await api
-
         const connectionPostgres = await PostgresDB.connect()
         const model = await PostgresDB.defineModel(connectionPostgres, UserSchema)
         const postgresModel = new Context(new PostgresDB(connectionPostgres, model));

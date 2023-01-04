@@ -1,19 +1,13 @@
 //strictQuery usada para remover DeprecationWarning no loogin
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
-
 const assert = require('assert')
-const api = require('./../api')
-const HeroSchema = require('../src/db/strategies/mongodb/schemas/heroSchema')
-const MongoDB = require('../src/db/strategies/mongodb/mongoDbStrategy')
-const Context = require('../src/db/strategies/base/contextStrategy')
 
 let app = {}
 let MOCK_ID = `mock`
 //hash MOCK_TOKEN = auth
 let MOCK_TOKEN = `$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS`
 const headers = { Authorization: MOCK_TOKEN }
-
 
 function cadastrar() { return app.inject({
         method: 'POST',
@@ -27,8 +21,7 @@ function cadastrar() { return app.inject({
 }
 
 describe('*****apiHeroes.test*****', function () {
-    this.beforeAll(async () => {
-        app = await api
+    this.beforeEach(async () => {
         const result = await cadastrar()
         MOCK_ID = JSON.parse(result.payload)._id
     })

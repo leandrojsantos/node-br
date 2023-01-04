@@ -1,5 +1,4 @@
 const assert = require('assert')
-const api = require('../api')
 const UserSchema = require('../src/db/strategies/postgres/schemas/userSchema')
 const Context = require('../src/db/strategies/base/contextStrategy')
 const PostgresDB = require('../src/db/strategies/postgres/postgresSQLStrategy')
@@ -20,8 +19,6 @@ const USER_DB = {
 
 describe('****apiUser.test****', function () {
     this.beforeAll(async () => {
-        app = await api
-
         const connectionPostgres = await PostgresDB.connect()
         const model = await PostgresDB.defineModel(connectionPostgres, UserSchema)
         const postgresModel = new Context(new PostgresDB(connectionPostgres, model));
