@@ -1,41 +1,27 @@
 {
-  "name": "back-end-node",
+  "name": "back-end-node-strategy",
   "version": "2.2.2",
-  "description": "hapi-api com base para novos projetos Multi DataSources",
   "main": "api.js",
   "scripts": {
-    "preinstall": "npm i -g pm2",
-    "prod": "cross-env NODE_ENV=prod pm2-runtime api.js",
-    "dev": "cross-env NODE_ENV=dev pm2-runtime api.js",
-    "start": "nodemon api.js",
-    "test": "nyc --reporter=html mocha --timeout 10000 tests/*.test.js --exit"
+    "test": "mocha tests/*.test.js"
   },
-  "author": "leandrojsantos",
   "devDependencies": {
-    "boom": "^7.3.0",
-    "mocha": "^10.2.0",
-    "nodemon": "^2.0.20",
-    "nyc": "^15.1.0",
-    "saslprep": "^1.0.3"
+    "mocha": "^5.2.0"
   },
   "dependencies": {
-    "bcrypt": "^5.1.0",
-    "body-parser": "^1.20.1",
-    "config": "3.3.8",
-    "cors": "^2.8.5",
-    "cross-env": "7.0.3",
-    "dotenv": "16.0.3",
-    "hapi": "^18.1.0",
-    "hapi-auth-jwt2": "10.2.0",
-    "hapi-swagger": "15.0.0",
-    "inert": "^2.0.0",
-    "joi": "^17.7.0",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.8.1",
-    "nanoid": "^4.0.0",
-    "pg": "^8.8.0",
-    "pg-hstore": "^2.3.4",
-    "sequelize": "^6.28.0",
-    "vision": "^5.4.4"
+    "bcrypt": "^3.0.2",
+    "boom": "^7.2.2",
+    "dotenv": "^6.2.0",
+    "hapi": "^17.7.0",
+    "hapi-auth-jwt2": "^8.1.0",
+    "hapi-swagger": "^9.1.3",
+    "inert": "^5.1.2",
+    "joi": "^14.1.0",
+    "jsonwebtoken": "^8.4.0",
+    "mongoose": "^5.3.11",
+    "pg": "^7.4.3",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.38.0",
+    "vision": "^5.4.3"
   }
 }

@@ -21,7 +21,7 @@ function cadastrar() { return app.inject({
 }
 
 describe('*****apiHeroes.test*****', function () {
-    this.beforeEach(async () => {
+    this.beforeAll(async () => {
         const result = await cadastrar()
         MOCK_ID = JSON.parse(result.payload)._id
     })

@@ -22,7 +22,7 @@ const USER_DB = {
 }
 
 describe('*****auth.test*****', function () {
-    this.beforeEach(async () => {
+    this.beforeAll(async () => {
         app = await api
         const connectionPostgres = await PostgresDB.connect()
         const model = await PostgresDB.defineModel(connectionPostgres, UserSchema)
