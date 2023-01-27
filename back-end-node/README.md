@@ -21,20 +21,17 @@ Tabela de conteúdos
 
 ## 💻 Sobre o projeto
 
-Back-end feito em node.js base para incio de projetos multi database
+Back-end feito em node.js para base de um projeto multi database, usando pradrão stratagy 
 
 A pasta examples foi criada como exemplos de
 código e comentários sobre como e funciona cada biblioteca e padrão de projeto, também a comentários no código para explicação.
-
-Observação por causa descontinuamento do framework [hapijs](https://hapi.dev/) e essencial para que o back-end funcione, corretamente que este projeto seja instalado na versão do [Node na versão 10.19.0](https://nodejs.org/en/)
-devido a esse incômodo sugiro que tenha o [nvm](https://itnext.io/nvm-the-easiest-way-to-switch-node-js-environments-on-your-machine-in-a-flash-17babb7d5f1b) que serve para gerenciar versões
 
 ---
 
 ## ⚙️ Funcionalidades
 
 - [x] api com mongodb e mongoclient
-- [x] api com postregres e adminer
+- [x] api com postgres e adminer
 - [x] api com crud em ambos os bancos de dados
 - [x] testes unitários com mocha 
 - [x] modo development e production
@@ -131,11 +128,8 @@ Além disto é bom ter um editor para trabalhar com o código como [VSCode](http
 # Seguida já com imagens docker do mongodb/mongoclient e postgres/adminer
 # Abra seu navegador em http://localhost:3000/ e http://localhost:8080/ faça login como está no arquivo comando-dbs
 
-# Instale as dependências
+# Usando node na ver v9.7.1 instale as dependências
 $ npm install
-
-# Tira erros de dependências
-$ npm audit fix --force
 
 # para testes na api
 $ npm test
