@@ -25,9 +25,6 @@ Back-end feito em node.js base para incio de projetos com base unica postgres.
 A pasta examples foi criada como exemplos de
 código e comentários sobre como e funciona cada biblioteca e padrão de projeto, também a comentários no código para explicação.
 
-Observação por causa descontinuamento do framework [hapijs](https://hapi.dev/) e essencial para que o back-end funcione, corretamente que este projeto seja instalado na versão do [Node na versão 10.19.0](https://nodejs.org/en/)
-devido a esse incômodo sugiro que tenha o [nvm](https://itnext.io/nvm-the-easiest-way-to-switch-node-js-environments-on-your-machine-in-a-flash-17babb7d5f1b) que serve para gerenciar versões
-
 ---
 
 ## ⚙️ Funcionalidades
@@ -43,7 +40,7 @@ devido a esse incômodo sugiro que tenha o [nvm](https://itnext.io/nvm-the-easie
 
 ### Pré-requisitos
 Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:
-[Git](https://git-scm.com), [Docker](https://docs.docker.com/engine/install/ubuntu/), [Node na versão 10.19.0](https://nodejs.org/en/), para controle de versão do node [nvm](https://itnext.io/nvm-the-easiest-way-to-switch-node-js-environments-on-your-machine-in-a-flash-17babb7d5f1b)
+[Git](https://git-scm.com), [Docker](https://docs.docker.com/engine/install/ubuntu/), [Node na versão 12.22.9](https://nodejs.org/en/), para controle de versão do node [nvm](https://itnext.io/nvm-the-easiest-way-to-switch-node-js-environments-on-your-machine-in-a-flash-17babb7d5f1b)
 
 Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/) e também um navegador/Browser de sua escolha.
 
@@ -52,13 +49,12 @@ Além disto é bom ter um editor para trabalhar com o código como [VSCode](http
 ```bash
 # Acesse a pasta do projeto no vscode, vá para a pasta docker do projeto
 
-#Acesse o arquivo comando-dbs.md e faça os passos para do postgres terminal em seguida já com imagens docker do postgres/adminer, abra seu navegador em http://localhost:8080/ faça login como está no arquivo comando-dbs
+# Acesse o arquivo comando-dbs.md e faça os passos para do mongodb terminal  
+# Seguida já com imagens docker do mongodb/mongoclient e postgres/adminer
+# Abra seu navegador em http://localhost:3000/ e http://localhost:8080/ faça login como está no arquivo comando-dbs
 
-# Instale as dependências
+# Usando node na ver v12.22.9 instale as dependências
 $ npm install
-
-# Tira erros de dependências
-$ npm audit fix --force
 
 # para testes na api
 $ npm test
@@ -69,35 +65,8 @@ $ npm run dev
 # Executa a aplicação em modo de produção
 $ npm run prod
 
-# O servidor iniciará na porta:5000 - acesse http://localhost:5000
+# O servidor iniciará na porta:5000 - acesse http://localhost:5000/documentation
 
-# Obs: no arquivo package.json deve se manter nas versões das seguintes :
-  "devDependencies": {
-    "mocha": "^7.1.1",
-    "nyc": "^15.0.0",
-    "saslprep": "^1.0.3",
-    "boom": "^7.3.0",
-    "nodemon": "^2.0.2"
-  },
-  "dependencies": {
-    "bcrypt": "^5.0.0",
-    "body-parser": "^1.19.0",
-    "config": "3.2.3",
-    "cors": "^2.8.5",
-    "cross-env": "5.2.0",
-    "dotenv": "8.0.0",
-    "hapi": "^18.1.0",
-    "hapi-auth-jwt2": "8.6.1",
-    "hapi-swagger": "10.0.2",
-    "inert": "^5.1.3",
-    "joi": "^14.3.1",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.5",
-    "nanoid": "^2.1.11",
-    "pg": "^7.18.2",
-    "pg-hstore": "^2.3.3",
-    "sequelize": "^5.21.5",
-    "vision": "^5.4.4"
 ```
 ---
 
