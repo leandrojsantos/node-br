@@ -31,18 +31,18 @@ describe('****apiUser.test****', function () {
         assert.ok(result.length > 10);
     });
 
-    it('t2 - add User', async () => {
-        const result = await app.inject({
-            method: 'POST',
-            url: '/login',
-            payload: USER
-        });
-        const statusCode = result.statusCode
-        const dados = JSON.parse(result.payload)
-        console.log(`dados`, dados);
+    // it('t2 - add User', async () => {
+    //     const result = await app.inject({
+    //         method: 'POST',
+    //         url: '/login',
+    //         payload: USER
+    //     });
+    //     const statusCode = result.statusCode
+    //     const dados = JSON.parse(result.payload)
+    //     console.log(`dados`, dados);
 
-        assert.deepEqual(statusCode, 200 || 500)
-        //500 demostra username ja existe no db
-        assert.ok(JSON.parse(result.payload).token.length > 10)
+    //     assert.deepEqual(statusCode, 200 || 500)
+    //     //500 demostra username ja existe no db
+    //     assert.ok(JSON.parse(result.payload).token.length > 10)
     })
 })

@@ -1,52 +1,86 @@
 const assert = require('assert')
-const HeroSchema = require('../src/db/strategies/mongodb/schemas/heroSchema')
 const MongoDb = require('../src/db/strategies/mongodb/mongoDbStrategy')
 const Context = require('../src/db/strategies/base/contextStrategy')
+const FileSchema = require('../src/db/strategies/mongodb/schemas/fileSchema')
+const nanoid = require('nanoid')
 
-const MOCK_HEROI_CADASTRAR = {
-    nome: 'teste j',
-    poder: 'visao'
-};
+const MOCK_FILE_CADASTRAR = {
+    name: nanoid(7),
+    size: '123',
+    key:  nanoid(7),
+    url: 'https://gitlab.com/'
+}
 
-const MOCK_HEROI_ATUALIZAR = {
-    nome: 'hulk',
-    poder: 'força'
-};
-let MOCK_HEROI_ATUALIZAR_ID = '';
+
+const MOCK_FILE_ATUALIZAR = {
+    name: nanoid(7),
+    size: '255',
+    key:  nanoid(7),
+    url: 'https://gitlab.com'
+}
+
+let MOCK_FILE_ATUALIZAR_ID = '';
 let context = {}
 
-describe('*****mongodbStartegy.test*****', function () {
+describe('****Mongodb Strategy Suite de Testes****', function () {
     this.beforeAll(async () => {
         const connection = MongoDb.connect()
-        context = new Context(new MongoDb(connection, HeroSchema))
-        const result = await context.create(MOCK_HEROI_ATUALIZAR)
-        MOCK_HEROI_ATUALIZAR_ID = result._id
+        context = new Context(new MongoDb(connection, FileSchema))
+
+        const result = await context.create(MOCK_FILE_ATUALIZAR)
+        MOCK_FILE_ATUALIZAR_ID = result._id
     })
 
-    it('t1 - verificar conexao', async () => {
+    it('T1 conexao', async () => {
         const result = await context.isConnected()
         const expected = 'Conectado'
+
         assert.deepEqual(result, expected)
     })
 
-    it('t2 - cadastrar', async () => {
-        const { nome, poder } = await context.create(MOCK_HEROI_CADASTRAR)        
-        assert.deepEqual({ nome, poder }, MOCK_HEROI_CADASTRAR)
+    it('T2 cadastro', async () => {
+        const {
+            name,
+            size,
+            key,
+            url
+        } = await context.create(MOCK_FILE_CADASTRAR)
+
+        assert.deepEqual({
+            name,
+            size,
+            key,
+            url
+        }, MOCK_FILE_CADASTRAR)
     })
 
-    it('t3 - listar', async () => {
-        const [{ nome, poder}] = await context.read({ nome: MOCK_HEROI_CADASTRAR.nome})
-        const result = { nome, poder }
-        assert.deepEqual(result, MOCK_HEROI_CADASTRAR)
+    it('T3 lista', async () => {
+        const [{
+            name,
+            size,
+            key,
+            url
+        }] = await context.read({
+            name: MOCK_FILE_CADASTRAR.name
+        })
+        const result = {
+            name,
+            size,
+            key,
+            url
+        }
+        assert.deepEqual(result, MOCK_FILE_CADASTRAR)
     })
 
-    it('t4 - atualizar', async () => {
-        const result = await context.update(MOCK_HEROI_ATUALIZAR_ID, { poder: 'rapidez'})
+    it('T4 atualiza', async () => {
+        const result = await context.update(MOCK_FILE_ATUALIZAR_ID, {
+            url: 'https://git.com/leandrojsantos'
+        })
         assert.deepEqual(result.nModified, 1)
     })
-    
-    it('t5 - remover', async () => {
-        const result = await context.delete(MOCK_HEROI_ATUALIZAR_ID)
+
+    it('T5 remove', async () => {
+        const result = await context.delete(MOCK_FILE_ATUALIZAR_ID)
         assert.deepEqual(result.n, 1)
     })
 })

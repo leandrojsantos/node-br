@@ -1,68 +1,92 @@
 const { join } = require('path')
 const { config } = require('dotenv')
 const { ok } = require('assert')
-const env = process.env.NODE_ENV || "dev"
-ok(env === "prod" || env === "dev", "environment inválida! Ou prod ou dev")
-const configPath = join('./config', `.env.${env}`)
-config({ path: configPath })
 
 const Hapi = require('hapi')
-const Context = require('./src/db/strategies/base/contextStrategy')
-const MongoDB = require('./src/db/strategies/mongodb/mongoDbStrategy')
-const HeroRoutes = require('./src/routes/heroRoutes')
-const HeroSchema = require('./src/db/strategies/mongodb/schemas/heroSchema')
-const PostgresDB = require('./src/db/strategies/postgres/postgresSQLStrategy')
-const AuthRoutes = require('./src/routes/authRoutes')
-const UserSchema = require('./src/db/strategies/postgres/schemas/userSchema')
+const env = process.env.NODE_ENV || "dev"
+ok(env === "prod" || env === "dev", "environment err!!! prod and dev")
+
+const configPath = join('./config', `.env.${env}`)
+
+config({ path: configPath })
 
 const HapiSwagger = require('hapi-swagger')
 const Inert = require('inert')
 const Vision = require('vision')
 const HapiJwt = require('hapi-auth-jwt2')
-const MINHA_CHAVE_SECRETA = process.env.JWT_KEY
+const JWT_KEY_ROOT = process.env.JWT_KEY
 
 const swaggerConfig = {
-    info: { title: '#API', version: 'v5.5' },
-    lang: 'pt'
+    info: {
+        title: 'API Restfull',
+        version: 'v0.10'
+    },
 }
 
-const app = new Hapi.Server({ port: process.env.PORT })
+const Context = require('./src/db/strategies/base/contextStrategy')
+const MongoDB = require('./src/db/strategies/mongodb/mongoDbStrategy')
+
+const FileSchema = require('./src/db/strategies/mongodb/schemas/fileSchema')
+const UserSchema = require('./src/db/strategies/mongodb/schemas/userSchema')
+
+const UtilRoutes = require('./src/routes/utilRoutes')
+const AuthRoutes = require('./src/routes/authRoutes')
+const UserRoutes = require('./src/routes/userRoutes')
+const FileRoutes = require('./src/routes/fileRoutes')
+
+
+const app = new Hapi.Server({
+    port: process.env.PORT,
+    routes: { cors: true }
+})
+
 
 function mapRoutes(instance, methods) {
     return methods.map(method => instance[method]())
 }
 
 async function main() {
-    const connectionPostgres = await PostgresDB.connect()
-    const model = await PostgresDB.defineModel(connectionPostgres, UserSchema)
-    const postgresModel = new Context(new PostgresDB(connectionPostgres, model));
+    const user = MongoDB.connect()
+    const file = MongoDB.connect()
+    const mongoDbFile = new Context(new MongoDB(file, FileSchema))
+    const mongoDbUser = new Context(new MongoDB(user, UserSchema))
 
-    const connection = MongoDB.connect()
-    const mongoDb = new Context(new MongoDB(connection, HeroSchema))
+    await app.register([ 
+        HapiJwt, Inert, Vision,
+        { plugin: HapiSwagger, options: swaggerConfig  }
+    ])
 
-    await app.register([ HapiJwt, Inert, Vision,  { plugin: HapiSwagger,  options: swaggerConfig }])
-    
-    app.auth.strategy('jwt', 'jwt', {
+    app.auth.strategy('jwt', 'jwt', { 
         key: JWT_KEY_ROOT,
-        options: { expiresIn: 30, algorithms: ['HS256']},
-        validate: (dado, request) => {return { isValid: true }        }
+        options: {
+            expiresIn: 30,
+            algorithms: ['HS256']
+        },
+        validate: (dado, request) => {
+            return {
+                isValid: true
+            }
+        }
     })
 
     app.auth.default('jwt')
 
+
     app.route([
-        //rotas do mongodb
-        ...mapRoutes(new HeroRoutes(mongoDb), HeroRoutes.methods()),
-        
-        //rotas do postgres
-        ...mapRoutes(new UserRoutes( postgresModel), UserRoutes.methods()),
-        ...mapRoutes(new AuthRoutes(JWT_KEY_ROOT, postgresModel), AuthRoutes.methods())
+        //api methods helpers
+        ...mapRoutes(new UtilRoutes(), UtilRoutes.methods()),
+
+        //api methods mongodb
+        ...mapRoutes(new FileRoutes(mongoDbFile), FileRoutes.methods()),
+        ...mapRoutes(new UserRoutes(mongoDbUser), UserRoutes.methods()),
+        ...mapRoutes(new AuthRoutes(JWT_KEY_ROOT, mongoDbUser),
+            AuthRoutes.methods()),
     ])
 
     await app.start()
     console.log('API SWAGGER OK, na porta', app.info.port, 'link abaixo')
     console.log(`${'http://localhost:5000/documentation'}`)
-        return app;
+    return app;
 }
 
 module.exports = main()

@@ -1,19 +1,20 @@
 const assert = require('assert');
 const PasswordHelper = require('../src/helpers/passwordHelper');
 
-const SENHA = 'testPss@pss';
-const HASH = '$2b$04$xD/qMwMqBSa7kTB1.lmdVOvNW/XcFcQBTMZ4SYo0QJ85gwXmWIhQy'
+const SENHA = 'test@auth';
+const HASH = '$2b$04$.7R114LrsJAek0UKyz0zjuMu9HMRqn9WSQe0FCX6L81KJyvFVT7ey'
 
-describe('*****passwordHelper.test******', function () {
-    
-    it('t1 - deve gerar um hash a partir de uma senha', async () => {
+describe('****Password Helper Suite de Testes****', function () {
+
+    it('T1 gerar Hash', async () => {
         const result = await PasswordHelper.hashPassword(SENHA);
         console.log('result', result)
         assert.ok(result.length > 10);
     });
 
-    it('t2 - deve comparar uma senha e seu hash', async () => {
+    it('T2 comparar Hash', async () => {
         const result = PasswordHelper.comparePassword(SENHA, HASH)
+        console.log('result', result)
         assert.ok(result)
     })
 

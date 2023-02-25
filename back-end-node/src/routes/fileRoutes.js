@@ -1,16 +1,7 @@
 const BaseRoute = require('./base/baseRoute')
 const Joi = require('joi')
-const Boom = require('boom')
 
-const PasswordHelper = require('../helpers/passwordHelper')
-
-const USER = {
-    username: 'Hulk',
-    password: 'auth',
-}
-const Jwt = require('jsonwebtoken')
-
-class UserRoutes extends BaseRoute {
+class FileRoutes extends BaseRoute {
     constructor(db) {
         super()
         this.db = db
@@ -18,12 +9,12 @@ class UserRoutes extends BaseRoute {
 
     list() {
         return {
-            path: '/users',
+            path: '/files',
             method: 'GET',
             config: {
                 tags: ['api'],
-                description: 'Listar users',
-                notes: 'Retorna a base inteira de users e password com hash',
+                description: 'Lista todos os file ',
+                notes: 'Retorna a base inteira de file',
 
                 validate: {
                     failAction: (request, h, err) => {
@@ -42,13 +33,12 @@ class UserRoutes extends BaseRoute {
 
     create() {
         return {
-            path: '/users',
+            path: '/files',
             method: 'POST',
             config: {
-                auth: false,
                 tags: ['api'],
-                description: 'Cadastrar User',
-                notes: 'Cadastra um novo Usuario: por username e password',
+                description: 'Cadastra novo file ',
+                notes: 'add novo file',
                 plugins: {
                     'hapi-swagger': {
                         payloadType: 'form'
@@ -58,45 +48,33 @@ class UserRoutes extends BaseRoute {
                     failAction: (request, h, err) => {
                         throw err;
                     },
+                    headers: Joi.object({
+                        authorization: Joi.string().required()
+                    }).unknown(),
                     payload: {
-                        username: Joi.string().min(3).max(30).required(),
-                        password: Joi.string().min(3).max(30).required()
+                        name: Joi.string().min(3).max(50).required(),
+                        size: Joi.number().integer().positive().min(1).required(),
+                        key: Joi.string().min(2).max(100),
+                        url: Joi.string().min(2).max(200)
                     }
-                }
+                },
+
             },
-            handler: async (request, headers) => {
+            handler: (request, headers) => {
                 const payload = request.payload
-                const {
-                    username
-                } = request.payload
-
-                const [USER] = await this.db.read({
-                    username: username.toLowerCase()
-                })
-
-                if (!USER) {
-                    const userNew = {
-                        ...payload,
-                        password: await PasswordHelper.hashPassword(payload.password)
-                    }
-
-                    console.log(`payload`, payload)
-                return this.db.create(userNew)
-                }
-
-                return Boom.badRequest('Username ja existe')
+                return this.db.create(payload)
             }
         }
     }
 
     update() {
         return {
-            path: '/users/{id}',
+            path: '/files/{id}',
             method: 'PATCH',
             config: {
                 tags: ['api'],
-                description: 'Atualizar User',
-                notes: 'Atualiza um Usuario por ID',
+                description: 'Atualizar file',
+                notes: 'Atualiza um file dinamico por ID',
                 plugins: {
                     'hapi-swagger': {
                         payloadType: 'form'
@@ -113,32 +91,30 @@ class UserRoutes extends BaseRoute {
                         id: Joi.string().required()
                     },
                     payload: {
-                        username: Joi.string().min(3).max(30).required(),
-                        password: Joi.string().min(3).max(30).required()
+                        name: Joi.string().min(3).max(50).required(),
+                        size: Joi.string().min(2).max(10),
+                        key: Joi.string().min(2).max(200),
+                        url: Joi.string().min(2).max(500)
                     }
-                }
+                },
+
             },
-            handler: async (request, headers) => {
+            handler: (request, headers) => {
                 const payload = request.payload;
-                const userUpdate = {
-                    ...payload,
-                    password: await PasswordHelper.hashPassword(payload.password)
-                }
                 const id = request.params.id;
-                console.log(`payload`, payload);
-                return this.db.update(id, userUpdate)
+                return this.db.update(id, payload)
             }
         }
     }
 
     delete() {
         return {
-            path: '/users/{id}',
+            path: '/files/{id}',
             method: 'DELETE',
             config: {
                 tags: ['api'],
-                description: 'Remove User',
-                notes: 'Remove um Usuario por ID',
+                description: 'Remove file',
+                notes: 'Remove um file por ID',
 
                 validate: {
                     failAction: (request, h, err) => {
@@ -161,4 +137,4 @@ class UserRoutes extends BaseRoute {
 
 }
 
-module.exports = UserRoutes
+module.exports = FileRoutes
