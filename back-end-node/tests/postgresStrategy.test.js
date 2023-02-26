@@ -1,16 +1,16 @@
 const { equal, deepEqual, ok } = require('assert');
-const HeroiSchema = require('../src/db/strategies/postgres/schemas/heroiSchema');
+const HeroSchema = require('../src/db/strategies/postgres/schemas/heroSchema');
 const PostgresStrategy = require('../src/db/strategies/postgres/postgresSQLStrategy');
 const Context = require('../src/db/strategies/base/contextStrategy');
 
 const MOCK_HEROI_CADASTRAR = {
-  nome: 'test d',
-  poder: 'forca'
+  username: 'test d',
+  power: 'forca'
 };
 
 const MOCK_HEROI_ATUALIZAR = {
-  nome: 'test e',
-  poder: 'grito'
+  username: 'test e',
+  power: 'nada'
 };
 
 let context = {}
@@ -19,7 +19,7 @@ describe('*****postgresStrategy.test*****', function () {
   this.timeout(Infinity);
   before(async () => {
     const connection = await PostgresStrategy.connect()
-    const model = await PostgresStrategy.defineModel(connection, HeroiSchema)
+    const model = await PostgresStrategy.defineModel(connection, HeroSchema)
     context = new Context(new PostgresStrategy(connection, model));
 
     await context.delete();
@@ -47,7 +47,7 @@ describe('*****postgresStrategy.test*****', function () {
   it('t4 - atualizar', async () => {
     const [result] = await context.read({});
     const novoItem = {...MOCK_HEROI_CADASTRAR, 
-      nome: 'test e' 
+      username: 'test e' 
     };
     const [update] = await context.update(result.id, novoItem);
     deepEqual(update, 1);

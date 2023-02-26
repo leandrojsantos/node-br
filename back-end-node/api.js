@@ -1,24 +1,11 @@
-const {
-    join
-} = require('path')
-const {
-    config
-} = require('dotenv')
-
-const {
-    ok
-} = require('assert')
-
+const { join } = require('path')
+const { config } = require('dotenv')
+const { ok } = require('assert')
 const Hapi = require('hapi')
 const env = process.env.NODE_ENV || "dev"
-ok(env === "prod" || env === "dev", "environment inválida! Ou prod ou dev")
-
+ok(env === "prod" || env === "dev", "environment err!!! in prod  dev")
 const configPath = join('./config', `.env.${env}`)
-
-config({
-    path: configPath
-})
-
+config({ path: configPath })
 const HapiSwagger = require('hapi-swagger')
 const Inert = require('inert')
 const Vision = require('vision')
@@ -27,49 +14,45 @@ const JWT_KEY_ROOT = process.env.JWT_KEY
 
 const swaggerConfig = {
     info: {
-        title: 'API Restfull - MongoDB',
-        version: 'v0.0'
+        title: 'API Restfull',
+        version: 'v0.10'
     },
 }
 
 const Context = require('./src/db/strategies/base/contextStrategy')
 const MongoDB = require('./src/db/strategies/mongodb/mongoDbStrategy')
+const PostgresDB = require('./src/db/strategies/postgres/postgresSQLStrategy')
 
+const HeroSchema = require('./src/db/strategies/postgres/schemas/heroSchema')
 const FileSchema = require('./src/db/strategies/mongodb/schemas/fileSchema')
 const UserSchema = require('./src/db/strategies/mongodb/schemas/userSchema')
-
 const UtilRoutes = require('./src/routes/utilRoutes')
 const AuthRoutes = require('./src/routes/authRoutes')
 const UserRoutes = require('./src/routes/userRoutes')
 const FileRoutes = require('./src/routes/fileRoutes')
 
-
 const app = new Hapi.Server({
     port: process.env.PORT,
-    routes: {
-        cors: true
-    }
+    routes: { cors: true }
 })
 
-
-function mapRoutes(instance, methods) {
-    return methods.map(method => instance[method]())
-}
+function mapRoutes(instance, methods) { return methods.map(method => instance[method]())}
 
 async function main() {
+    //mongodb
     const user = MongoDB.connect()
     const file = MongoDB.connect()
     const mongoDbFile = new Context(new MongoDB(file, FileSchema))
     const mongoDbUser = new Context(new MongoDB(user, UserSchema))
 
-    await app.register([
-        HapiJwt,
-        Inert,
-        Vision,
-        {
-            plugin: HapiSwagger,
-            options: swaggerConfig
-        }
+    //postgres
+    const connectionPostgres = await PostgresDB.connect()
+    const model = await PostgresDB.defineModel(connectionPostgres, HeroSchema)
+    const postgresModel = new Context(new PostgresDB(connectionPostgres, model));
+
+    await app.register([ 
+        HapiJwt, Inert, Vision,
+        { plugin: HapiSwagger, options: swaggerConfig }
     ])
 
     app.auth.strategy('jwt', 'jwt', {
@@ -78,19 +61,15 @@ async function main() {
             expiresIn: 30,
             algorithms: ['HS256']
         },
-        validate: (dado, request) => {
-            return {
-                isValid: true
-            }
-        }
+        validate: (dado, request) => { return { isValid: true }}
     })
 
     app.auth.default('jwt')
 
-
     app.route([
-        //api methods helpers
+        //api methods postgresql
         ...mapRoutes(new UtilRoutes(), UtilRoutes.methods()),
+        ...mapRoutes(new HeroRoutes(postgresModel), HeroRoutes.methods()),
 
         //api methods mongodb
         ...mapRoutes(new FileRoutes(mongoDbFile), FileRoutes.methods()),

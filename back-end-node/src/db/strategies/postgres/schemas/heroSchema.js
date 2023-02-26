@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize')
-const HeroiSchema = {
-  name: 'herois',
+const HeroSchema = {
+  name: 'hero',
   schema: {
     id: {
       type: Sequelize.INTEGER,
@@ -8,22 +8,21 @@ const HeroiSchema = {
       primaryKey: true,
       autoIncrement: true,
     },
-    nome: {
+    username: {
       type: Sequelize.STRING,
       required: true,
     },
-    poder: {
+    power: {
       type: Sequelize.STRING,
       required: true,
     },
   },
   options: {
     //opcoes para base existente
-    tableName: 'TB_HEROIS',
+    tableName: 'TB_HERO',
     freezeTableName: false,
     timestamps: false,
-
   }
 }
 
-module.exports = HeroiSchema
+module.exports = HeroSchema
