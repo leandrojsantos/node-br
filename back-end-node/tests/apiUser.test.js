@@ -1,48 +1,111 @@
 const assert = require('assert')
-const UserSchema = require('../src/db/strategies/postgres/schemas/userSchema')
-const Context = require('../src/db/strategies/base/contextStrategy')
-const PostgresDB = require('../src/db/strategies/postgres/postgresSQLStrategy')
-const PasswordHelper = require('../src/helpers/passwordHelper');
+const api = require('../api')
+const nanoid = require('nanoid')
 
 let app = {}
+let MOCK_ID = ``
+let MOCK_TOKEN = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE1NjcwMzYxOTJ9.Rucs0TRxlf4Hylol801jn0zTi-IPezfFg1YWf2OBuAM`
 
-const USER = {
-    username: 'test b',
-    password: 'auth'
+const headers = {
+    Authorization: MOCK_TOKEN
 }
 
-const USER_DB = {
-    ...USER,
-    //hash significado 'auth' = '$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS'
-    password: '$2b$04$meQYE5L8R6Wo5SfI8m6a7OFWmuJgPtFlvHveO5fN.bd8gM.DnzatS'
+function cadastrar() {
+    return app.inject({
+        method: 'POST',
+        url: '/users',
+        headers,
+        payload: {
+            username: nanoid(7),
+            password: 'auth'
+        }
+    });
 }
 
-describe('****apiUser.test****', function () {
+describe('****Api Users Suite de Testes****', function () {
     this.beforeAll(async () => {
-        const connectionPostgres = await PostgresDB.connect()
-        const model = await PostgresDB.defineModel(connectionPostgres, UserSchema)
-        const postgresModel = new Context(new PostgresDB(connectionPostgres, model));
-        await postgresModel.update(null, USER_DB, true)
+        app = await api
+        const result = await cadastrar()
+        MOCK_ID = JSON.parse(result.payload)._id
     })
 
-    it('t1 - gerar Hash', async () => {
-        const result = await PasswordHelper.hashPassword(USER.password);
-        console.log('result', result)
-        assert.ok(result.length > 10);
-    });
+    it('T1 token Errado', async () => {
+        const result = await app.inject({
+            method: 'GET',
+            url: '/users',
+        })
+        const statusCode = result.statusCode
 
-    // it('t2 - add User', async () => {
-    //     const result = await app.inject({
-    //         method: 'POST',
-    //         url: '/login',
-    //         payload: USER
-    //     });
-    //     const statusCode = result.statusCode
-    //     const dados = JSON.parse(result.payload)
-    //     console.log(`dados`, dados);
+        assert.deepEqual(statusCode, 401)
+        assert.deepEqual(JSON.parse(result.payload).error, "Unauthorized")
+    })
 
-    //     assert.deepEqual(statusCode, 200 || 500)
-    //     //500 demostra username ja existe no db
-    //     assert.ok(JSON.parse(result.payload).token.length > 10)
+    it('T2 lista', async () => {
+        const result = await app.inject({
+            method: 'GET',
+            url: '/users',
+            headers
+        })
+        const statusCode = result.statusCode
+
+        assert.deepEqual(statusCode, 200)
+        assert.ok(Array.isArray(JSON.parse(result.payload)))
+    })
+
+    it('T3 cadastra ', async () => {
+        const result = await cadastrar()
+        //console.log(`result`, result)
+        //console.log((bodyParser.payload), result)
+        const NAME_MOCK = JSON.parse(result.payload).username
+        assert.deepEqual(result.statusCode, 200)
+        assert.deepEqual(JSON.parse(result.payload).username, NAME_MOCK)
+    })
+
+    // it('T4 usernameRepetido', async () => {
+    //     const result = await cadastrar()
+    //     //console.log(`result`, result)
+    //     //console.log((bodyParser.payload), result)
+    //     const NAME_MOCK = JSON.parse(result.payload).username
+    //     assert.deepEqual(result.statusCode, 400)
+    //     assert.deepEqual(JSON.parse(result.payload).username, NAME_MOCK)
+    // })
+
+    it('T5 payload Errado', async () => {
+        const result = await app.inject({
+            method: 'POST',
+            url: '/users',
+            headers,
+            payload: {
+                NOME: 'mock'
+            }
+        })
+        const payload = JSON.parse(result.payload)
+        assert.deepEqual(result.statusCode, 400)
+        assert.ok(payload.message.search('"username" is required') !== -1)
+    })
+
+    it('T6 atualiza', async () => {
+        const result = await app.inject({
+            method: 'PATCH',
+            url: `/users/${MOCK_ID}`,
+            headers,
+            payload: {
+                username: 'Bruce Lee',
+                password: 'auth'
+            }
+        })
+        assert.deepEqual(result.statusCode, 200)
+        assert.deepEqual(JSON.parse(result.payload).nModified, 1)
+
+    })
+
+    it('T7 remove', async () => {
+        const result = await app.inject({
+            method: 'DELETE',
+            url: `/users/${MOCK_ID}`,
+            headers,
+        })
+        assert.deepEqual(result.statusCode, 200)
+        assert.deepEqual(JSON.parse(result.payload).n, 1)
     })
 })
