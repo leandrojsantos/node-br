@@ -6,7 +6,7 @@
     "test": "mocha tests/*.test.js"
   },
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^10.2.0"
   },
   "dependencies": {
     "bcrypt": "^3.0.2",
