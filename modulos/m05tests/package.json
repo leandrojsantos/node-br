@@ -10,7 +10,7 @@
   "author": "leandrojsantos",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^1.6.0",
     "nock": "^11.7.2"
   },
   "devDependencies": {
