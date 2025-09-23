@@ -82,6 +82,7 @@ const init = async () => {
   server.route({
     method: 'GET',
     path: '/health',
+    options: { auth: false },
     handler: (request, h) => {
       return h.response({
         status: 'OK',
@@ -95,6 +96,7 @@ const init = async () => {
   server.route({
     method: 'GET',
     path: '/test',
+    options: { auth: false },
     handler: async (request, h) => {
       try {
         const result = await mongoContext.read();

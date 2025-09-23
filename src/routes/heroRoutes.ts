@@ -1,6 +1,7 @@
 import Joi from 'joi';
+import { MongoStrategy } from '../models/strategies/mongoStrategy.js';
 
-export const heroRoutes = (dbContext) => [
+export const heroRoutes = (dbContext: MongoStrategy) => [
   {
     method: 'GET',
     path: '/heroes',
@@ -8,7 +9,7 @@ export const heroRoutes = (dbContext) => [
       auth: false,
       tags: ['api', 'heroes'],
       description: 'Lista todos os heróis',
-      notes: 'Retorna uma lista paginada de heróis',
+      notes: 'Retorna uma lista de heróis',
       validate: {
         query: Joi.object({
           page: Joi.number().integer().min(1).default(1).description('Número da página'),
@@ -18,34 +19,32 @@ export const heroRoutes = (dbContext) => [
         })
       }
     },
-    handler: async (request, h) => {
+    handler: async (request: any, h: any) => {
       try {
-        const { page = 1, limit = 10, ...filters } = request.query;
-        const skip = (page - 1) * limit;
+        const { page, limit, status, nivel } = request.query;
+        const query: any = {};
 
-        const result = await dbContext.read(filters);
-        
-        if (!result.success) {
-          return h.response(result).code(500);
-        }
+        if (status) query.status = status;
+        if (nivel) query.nivel = { $gte: nivel };
 
-        const heroes = result.data || [];
-        const total = heroes.length;
-        const paginatedHeroes = heroes.slice(skip, skip + limit);
+        const result = await dbContext.read(query);
+
+        // Implementar paginação simples
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedData = result.data.slice(startIndex, endIndex);
 
         return h.response({
-          success: true,
-          data: paginatedHeroes,
-          count: paginatedHeroes.length,
-          message: 'Heróis encontrados com sucesso',
+          ...result,
+          data: paginatedData,
           pagination: {
-            page: parseInt(page),
-            limit: parseInt(limit),
-            total,
-            pages: Math.ceil(total / limit)
+            page,
+            limit,
+            total: result.data.length,
+            pages: Math.ceil(result.data.length / limit)
           }
         }).code(200);
-      } catch (error) {
+      } catch (error: any) {
         return h.response({
           success: false,
           message: error.message
@@ -67,7 +66,7 @@ export const heroRoutes = (dbContext) => [
         })
       }
     },
-    handler: async (request, h) => {
+    handler: async (request: any, h: any) => {
       try {
         const { id } = request.params;
         const result = await dbContext.findById(id);
@@ -77,7 +76,7 @@ export const heroRoutes = (dbContext) => [
         }
 
         return h.response(result).code(200);
-      } catch (error) {
+      } catch (error: any) {
         return h.response({
           success: false,
           message: error.message
@@ -102,11 +101,11 @@ export const heroRoutes = (dbContext) => [
         })
       }
     },
-    handler: async (request, h) => {
+    handler: async (request: any, h: any) => {
       try {
         const result = await dbContext.create(request.payload);
         return h.response(result).code(201);
-      } catch (error) {
+      } catch (error: any) {
         return h.response({
           success: false,
           message: error.message
@@ -134,7 +133,7 @@ export const heroRoutes = (dbContext) => [
         }).min(1)
       }
     },
-    handler: async (request, h) => {
+    handler: async (request: any, h: any) => {
       try {
         const { id } = request.params;
         const result = await dbContext.update(id, request.payload);
@@ -144,11 +143,11 @@ export const heroRoutes = (dbContext) => [
         }
 
         return h.response(result).code(200);
-      } catch (error) {
+      } catch (error: any) {
         return h.response({
           success: false,
           message: error.message
-        }).code(500);
+        }).code(400);
       }
     }
   },
@@ -165,7 +164,7 @@ export const heroRoutes = (dbContext) => [
         })
       }
     },
-    handler: async (request, h) => {
+    handler: async (request: any, h: any) => {
       try {
         const { id } = request.params;
         const result = await dbContext.delete(id);
@@ -175,7 +174,7 @@ export const heroRoutes = (dbContext) => [
         }
 
         return h.response(result).code(200);
-      } catch (error) {
+      } catch (error: any) {
         return h.response({
           success: false,
           message: error.message

@@ -1,8 +1,9 @@
 import Joi from 'joi';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { PrismaStrategy } from '../models/strategies/prismaStrategy.js';
 
-export const authRoutes = (dbContext) => [
+export const authRoutes = (dbContext: PrismaStrategy) => [
   {
     method: 'POST',
     path: '/auth/register',
@@ -19,7 +20,7 @@ export const authRoutes = (dbContext) => [
         })
       }
     },
-    handler: async (request, h) => {
+    handler: async (request: any, h: any) => {
       try {
         const { nome, email, password } = request.payload;
 
@@ -52,14 +53,14 @@ export const authRoutes = (dbContext) => [
         }
 
         // Remover senha da resposta
-        const { password: _, ...userWithoutPassword } = result.data;
+        const { password: _, ...userWithoutPassword } = result.data as any;
 
         return h.response({
           success: true,
           data: { user: userWithoutPassword },
           message: 'Usuário registrado com sucesso'
         }).code(201);
-      } catch (error) {
+      } catch (error: any) {
         return h.response({
           success: false,
           message: error.message
@@ -82,7 +83,7 @@ export const authRoutes = (dbContext) => [
         })
       }
     },
-    handler: async (request, h) => {
+    handler: async (request: any, h: any) => {
       try {
         const { email, password } = request.payload;
 
@@ -95,7 +96,7 @@ export const authRoutes = (dbContext) => [
           }).code(401);
         }
 
-        const user = result.data;
+        const user = result.data as any;
 
         // Verificar status do usuário
         if (user.status !== 'ativo') {
@@ -144,7 +145,7 @@ export const authRoutes = (dbContext) => [
           },
           message: 'Login realizado com sucesso'
         }).code(200);
-      } catch (error) {
+      } catch (error: any) {
         return h.response({
           success: false,
           message: error.message

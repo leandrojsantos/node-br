@@ -1,7 +1,7 @@
+import { PrismaClient } from '@prisma/client';
 import mongoose from 'mongoose';
-import { Sequelize } from 'sequelize';
 import { MongoStrategy } from '../models/strategies/mongoStrategy.js';
-import { PostgresStrategy } from '../models/strategies/postgresStrategy.js';
+import { PrismaStrategy } from '../models/strategies/prismaStrategy.js';
 import { DatabaseContext as BaseContext } from './context.js';
 
 export class DatabaseContext extends BaseContext {
@@ -41,37 +41,12 @@ export class DatabaseContext extends BaseContext {
    */
   static async createPostgresContext() {
     try {
-      console.log('🔗 Conectando ao PostgreSQL...');
-
-      const sequelize = new Sequelize(
-        process.env.POSTGRES_DB || 'nodebr',
-        process.env.POSTGRES_USER || 'postgres',
-        process.env.POSTGRES_PASSWORD || 'postgres',
-        {
-          host: process.env.POSTGRES_HOST || 'localhost',
-          port: process.env.POSTGRES_PORT || 5432,
-          dialect: 'postgres',
-          logging: process.env.NODE_ENV === 'development' ? console.log : false,
-          pool: {
-            max: 5,
-            min: 0,
-            acquire: 30000,
-            idle: 10000
-          },
-          dialectOptions: {
-            connectTimeout: 60000,
-            requestTimeout: 60000,
-          }
-        }
-      );
-
-      await sequelize.authenticate();
-      // Registra os modelos antes do sync
-      const strategy = new PostgresStrategy(sequelize);
-      // Garantir que as tabelas existam em ambientes de dev/test
-      await sequelize.sync();
+      console.log('🔗 Conectando ao PostgreSQL via Prisma...');
+      const prisma = new PrismaClient();
+      await prisma.$connect();
       console.log('✅ PostgreSQL conectado com sucesso!');
 
+      const strategy = new PrismaStrategy(prisma);
       return new DatabaseContext(strategy);
     } catch (error) {
       console.error('❌ Erro ao conectar PostgreSQL:', error.message);

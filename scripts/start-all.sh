@@ -9,7 +9,7 @@ podman network create node-br-network 2>/dev/null || echo "Rede já existe"
 
 # Iniciar MongoDB
 echo "📦 Iniciando MongoDB..."
-podman run -d \
+podman run -d --replace \
   --name node-br-mongo \
   --network node-br-network \
   -p 27017:27017 \
@@ -22,7 +22,7 @@ sleep 10
 
 # Iniciar PostgreSQL
 echo "🐘 Iniciando PostgreSQL..."
-podman run -d \
+podman run -d --replace \
   --name node-br-postgres \
   --network node-br-network \
   -p 5432:5432 \
@@ -38,7 +38,7 @@ sleep 10
 
 # Iniciar Redis
 echo "🔴 Iniciando Redis..."
-podman run -d \
+podman run -d --replace \
   --name node-br-redis \
   --network node-br-network \
   -p 6379:6379 \
@@ -55,7 +55,7 @@ podman build -t node-br-refactored .
 
 # Iniciar aplicação
 echo "🚀 Iniciando aplicação..."
-podman run -d \
+podman run -d --replace \
   --name node-br-app \
   --network node-br-network \
   -p 3000:3000 \

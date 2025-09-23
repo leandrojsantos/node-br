@@ -8,7 +8,8 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - HOST=0.0.0.0
-      - MONGODB_URI=mongodb://mongo:27017/nodebr
+      - MONGODB_URI=mongodb://admin:admin123@mongo:27017/nodebr?authSource=admin
+      - DATABASE_URL=postgresql://postgres:postgres123@postgres:5432/nodebr?schema=public
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_DB=nodebr
@@ -33,7 +34,7 @@ services:
       - MONGO_INITDB_DATABASE=nodebr
     volumes:
       - mongo_data:/data/db
-      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro,Z
     networks:
       - app-network
     restart: unless-stopped
@@ -50,7 +51,7 @@ services:
       - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./docker/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./docker/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql:ro,Z
     networks:
       - app-network
     restart: unless-stopped
@@ -71,11 +72,11 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "8443:443"
     volumes:
-      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./docker/ssl:/etc/nginx/ssl:ro
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro,Z
+      - ./docker/ssl:/etc/nginx/ssl:ro,Z
     depends_on:
       - app
     networks:
