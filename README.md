@@ -1,108 +1,275 @@
-<h1 align="center">
-     <a href="#" alt="">Curso nodeBR</a>
-</h1>
+# Node BR API strategy pattern Refatorada em 2025 🚀
 
-<h4 align="center">
-	🚧   Concluído 🚀 🚧
-</h4>
+API Node.js moderna com padrões 2025, Strategy Pattern, Jest, Swagger e Podman.
 
-Tabela de conteúdos
-<!--ts-->
-   * [Sobre o projeto](#-sobre-o-projeto)
-   * [Layout](#-layout)
-   * [Como executar o projeto](#-como-executar-o-projeto)
-     * [Pré-requisitos](#pré-requisitos)
-     * [Rodando o Projeto](#user-content--rodando-o-projeto)
-   * [Tecnologias](#-tecnologias)
-<!--te-->
+## 📋 Sobre o Projeto
 
-## 💻 Sobre o projeto
+- **Strategy Pattern** para flexibilidade de banco de dados
+- **Jest** para testes unitários e de integração
+- **Swagger** para documentação automática da API
+- **Podman** para containerização e deploy
+- **CI/CD** com GitHub Actions
+- **Clean Code** e princípios SOLID
+- **ES Modules** e async/await
+- **Yarn** como gerenciador de pacotes
 
-Projeto baseado no curso do [Erick Wendel](https://cursos.nodebr.org/p/node-js-para-iniciantes-nodebr), este curso foi desenvolvido sob medida baseado em uma pesquisa sobre o que a comunidade brasileira mais necessita, suas principais dificuldades e desafios. 
+## 🏗️ Arquitetura
 
-Sobre esse projeto tem desde o ciclo de vida Javascript, manipulação de listas ao desenvolvimento real de aplicações em ambiente de produção.
-
-Foram desenvolvidos conceitos como desenvolvimento orientado a testes, autenticação, autorização, documentação de serviços e gerenciamento de variáveis de ambiente (environments) de aplicações.
-
-#### ⚙️ Funcionalidades
-
-Foco desde básico Javascript, ao avaçado com node.js em ambiente de produção como:
-
-- [x] Ciclo de vida, 
-- [x] Variáveis, 
-- [x] Métodos, 
-- [x] Classes e funções 
-- [x] Tipos de dados, 
-- [x] Null,Undefined e expressões booleanas,
-- [x] Estruturas de repetição,
-- [x] Manipulação de listas,
-- [x] Dominar funções assíncronas 
-- [x] Ambiente de produção.
-- [x] Desenvolvimento orientado a testes.
-- [x] Autenticação, autorização, documentação de serviços 
-- [x] Gerenciamento de variáveis de ambiente (environments) de aplicações
-
-  O projeto foi separado em pastas para fica mais organizado cada pasta funciona de forma independentemente, onde existe também explicações/comentários no meio do código
-
----
-
-## 🎨 Layout
-
-O layout da aplicação em um navegador
-
-<p align="center">
-  <img alt="nodebr-mdb" title="#nodebr-mdb" src="./images/1.png" width="400px">
-
-  <img alt="nodebr-mdb" title="#nodebr-mdb" src="./images/2.png" width="400px">
-</p>
-
----
-
-## 🚀 Como executar o projeto
-### Pré-requisitos
-
-Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:
-[Git](https://git-scm.com), [Docker](https://docs.docker.com/engine/install/ubuntu/), [Node na versão 10.19.0](https://nodejs.org/en/)
-
-Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/) e também um navegador/Browser de sua escolha eu escolhi [Chorme](https://www.google.pt/intl/pt-PT/chrome/?brand=CHBD&gclid=CjwKCAjw1ej5BRBhEiwAfHyh1CqpdiJkRowiF7qVChVWvkTImra14_fVqzdcxXeYoznuxbgYMmtS9BoCP4oQAvD_BwE&gclsrc=aw.ds)
-
-#### 🎲 Rodando o Projeto
-
-```bash
-# Clone este repositório
-$ git clone git@github.com:leandrojsantos/node-br.git
-
-# Acesse a pasta do projeto no terminal/cmd
-$ cd node-br/<nome-da-pasta-desejada>
-
-# Acesse a pasta do projeto com nome de back-end-node
-
-# Abrir o arquivo README.md seguir os passos nele descritos.
- 
-# Tenha certeza que os passos do README.md da pasta back-end-node estão em serviço.
+### Padrão Strategy
+O projeto utiliza o padrão Strategy para permitir troca de estratégias de banco de dados em tempo de execução:
 
 ```
----
+src/
+├── config/
+│   ├── context.js          # Contexto base do Strategy
+│   └── database.js         # Configuração dos bancos
+├── models/
+│   └── strategies/
+│       ├── mongoStrategy.js    # Estratégia MongoDB
+│       └── postgresStrategy.js # Estratégia PostgreSQL
+└── routes/
+    ├── heroRoutes.js       # Rotas de heróis (MongoDB)
+    ├── userRoutes.js       # Rotas de usuários (PostgreSQL)
+    └── authRoutes.js       # Rotas de autenticação
+```
 
-## 🛠 Tecnologias
+### Tecnologias Utilizadas
 
-As seguintes ferramentas foram usadas na construção do projeto:
+- **Node.js 20+** (LTS)
+- **Hapi.js** - Framework web
+- **MongoDB** - Banco NoSQL para heróis
+- **PostgreSQL** - Banco SQL para usuários
+- **Jest** - Framework de testes
+- **Swagger** - Documentação da API
+- **Podman** - Containerização
+- **ESLint + Prettier** - Qualidade de código
 
-**Server**  
-* [Git](https://git-scm.com) para controle de versões
-* [VSCode](https://code.visualstudio.com/) para edição de código
-* [Javascript](https://developer.mozilla.org/pt-BR/docs/Aprender/JavaScript) para desenvolvimento
-* [Docker](https://docs.docker.com/engine/install/ubuntu/) para cricação de containers e execução de serviços
-* [Node na versão 10.19.0](https://nodejs.org/en/) para desenvolvimento
+## 🚀 Como Executar
 
-**Utilitários**
+### Pré-requisitos
 
-[Curso Completo](https://cursos.nodebr.org/p/node-js-para-iniciantes-nodebr)
+- Node.js 20+ (LTS)
+- Yarn 1.22+
+- Podman e Podman Compose
+- MongoDB 7.0+
+- PostgreSQL 15+
 
-[Nerdzao](https://nerdzao.netlify.com/)
+### Instalação
 
-[Meetup](https://www.meetup.com/pt-BR/Javascript-SP)
+1. **Clone o repositório**
+```bash
+git clone <repository-url>
 
-Certificado do curso 
+```
 
-![Certificado](certificado/curso.png)
+2. **Instale as dependências**
+```bash
+yarn install
+
+```
+
+3. **Configure as variáveis de ambiente**
+```bash
+cp env.example .env
+# Edite o arquivo .env com suas configurações
+```
+
+4. **Execute com Podman**
+```bash
+# Subir todos os serviços (recomendado)
+yarn podman:start
+
+# Parar todos os serviços
+yarn podman:stop
+
+# Limpar containers e imagens antigas
+yarn podman:clean
+
+# Comandos alternativos
+yarn start:containers  # Subir containers
+yarn stop:containers   # Parar containers
+```
+
+5. **Execute localmente**
+```bash
+# Iniciar MongoDB e PostgreSQL
+# (use Podman Compose ou instale localmente)
+
+# Executar em desenvolvimento
+yarn dev
+
+# Executar em produção
+yarn start
+```
+
+### Acessar a API
+
+- **API**: http://localhost:3000
+- **Documentação Swagger**: http://localhost:3000/docs
+- **Health Check**: http://localhost:3000/health
+
+## 🧪 Testes
+
+### Executar Testes
+
+```bash
+# Todos os testes
+yarn test
+
+# Testes em modo watch
+yarn test:watch
+
+# Testes com cobertura
+yarn test:coverage
+
+# Testes para CI
+yarn test:ci
+```
+
+### Cobertura de Testes
+
+O projeto mantém alta cobertura de testes:
+- **Testes Unitários**: Estratégias de banco e utilitários
+- **Testes de Integração**: Rotas e fluxos completos
+- **Cobertura mínima**: 80%
+
+## 📚 Documentação da API
+
+A documentação completa está disponível via Swagger em `/docs`:
+
+### Endpoints Principais
+
+#### Heróis (MongoDB)
+- `GET /heroes` - Listar heróis
+- `GET /heroes/{id}` - Buscar herói por ID
+- `POST /heroes` - Criar herói
+- `PATCH /heroes/{id}` - Atualizar herói
+- `DELETE /heroes/{id}` - Remover herói
+
+#### Usuários (PostgreSQL)
+- `GET /users` - Listar usuários (admin)
+- `GET /users/{id}` - Buscar usuário por ID
+- `PATCH /users/{id}` - Atualizar usuário
+- `DELETE /users/{id}` - Remover usuário (admin)
+
+#### Autenticação
+- `POST /auth/register` - Registrar usuário
+- `POST /auth/login` - Login
+- `POST /auth/refresh` - Renovar token
+- `POST /auth/logout` - Logout
+
+## 🐳 Podman
+
+### Comandos Podman
+
+```bash
+# Build da imagem
+yarn podman:build
+
+# Executar container
+yarn podman:run
+
+# Subir todos os serviços
+yarn podman:compose
+
+# Parar serviços
+yarn podman:down
+
+# Comandos alternativos
+yarn start:containers  # Subir containers
+yarn stop:containers   # Parar containers
+
+# Scripts úteis
+./scripts/cleanup.sh      # Limpar containers e imagens antigas
+./scripts/start-databases.sh  # Iniciar apenas os bancos de dados
+```
+
+### Estrutura de Containers
+
+- **app**: Aplicação Node.js
+- **mongo**: MongoDB 7.0
+- **postgres**: PostgreSQL 15
+- **redis**: Redis 7 (cache)
+- **nginx**: Proxy reverso
+
+## 🔧 Desenvolvimento
+
+### Scripts Disponíveis
+
+```bash
+yarn start          # Iniciar em produção
+yarn dev            # Iniciar em desenvolvimento
+yarn test           # Executar testes
+yarn test:watch     # Testes em modo watch
+yarn test:coverage  # Testes com cobertura
+yarn lint           # Verificar código
+yarn lint:fix       # Corrigir problemas de lint
+yarn format         # Formatar código
+```
+
+### Qualidade de Código
+
+- **ESLint**: Análise estática
+- **Prettier**: Formatação automática
+- **Jest**: Testes automatizados
+- **Husky**: Git hooks (opcional)
+
+## 🚀 Deploy
+
+### CI/CD
+
+O projeto inclui pipeline CI/CD completo:
+
+1. **Lint e Formatação**
+2. **Testes Unitários e Integração**
+3. **Build Podman**
+4. **Análise de Segurança**
+5. **Deploy Automático**
+
+### Variáveis de Ambiente
+
+Configure as seguintes variáveis para produção:
+
+```env
+NODE_ENV=production
+PORT=3000
+MONGODB_URI=mongodb://mongo:27017/nodebr
+POSTGRES_DB=nodebr
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your-secure-password
+JWT_SECRET=your-super-secret-jwt-key
+```
+
+## 📊 Monitoramento
+
+### Health Check
+
+```bash
+curl http://localhost:3000/health
+```
+
+### Logs
+
+Os logs são estruturados em JSON para facilitar análise:
+
+```json
+{
+  "timestamp": "2025-01-27T10:00:00.000Z",
+  "level": "info",
+  "message": "Servidor iniciado",
+  "port": 3000,
+  "environment": "production"
+}
+```
+
+## 🤝 Contribuição
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para detalhes.

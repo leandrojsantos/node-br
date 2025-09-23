@@ -1,0 +1,92 @@
+services:
+  # Aplicação Node.js
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+      - MONGODB_URI=mongodb://mongo:27017/nodebr
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=nodebr
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+      - JWT_SECRET=minha-chave-secreta-super-segura-2025
+    depends_on:
+      - mongo
+      - postgres
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # MongoDB
+  mongo:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin123
+      - MONGO_INITDB_DATABASE=nodebr
+    volumes:
+      - mongo_data:/data/db
+      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=nodebr
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Redis para cache e rate limiting
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # Nginx como proxy reverso
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - app
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
+  postgres_data:
+  redis_data:
+
+networks:
+  app-network:
+    driver: bridge

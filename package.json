@@ -1,0 +1,91 @@
+{
+  "name": "node-br-refactored",
+  "version": "3.0.0",
+  "description": "API Node.js refatorada com padrões 2025, Strategy Pattern, Jest, Swagger e Docker",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "lint": "eslint src/ tests/",
+    "lint:fix": "eslint src/ tests/ --fix",
+    "format": "prettier --write src/ tests/",
+    "podman:build": "podman build -t node-br-refactored .",
+    "podman:run": "podman run -p 3000:3000 node-br-refactored",
+    "podman:start": "./scripts/start-all.sh",
+    "podman:stop": "./scripts/stop-all.sh",
+    "podman:clean": "./scripts/cleanup.sh",
+    "start:containers": "./scripts/start-all.sh",
+    "stop:containers": "./scripts/stop-all.sh"
+  },
+  "keywords": [
+    "nodejs",
+    "api",
+    "strategy-pattern",
+    "jest",
+    "swagger",
+    "podman",
+    "mongodb",
+    "postgresql"
+  ],
+  "author": "Leandro Santos",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0",
+    "yarn": ">=1.22.0"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^21.0.0",
+    "joi": "^17.12.0",
+    "@hapi/inert": "^7.1.0",
+    "@hapi/vision": "^7.0.0",
+    "hapi-swagger": "^15.0.0",
+    "hapi-auth-jwt2": "^8.0.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.0",
+    "pg": "^8.11.0",
+    "sequelize": "^6.35.0",
+    "dotenv": "^16.3.1",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "express-rate-limit": "^7.1.5"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "nodemon": "^3.0.2",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.1.0",
+    "@types/jest": "^29.5.8"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    },
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/app.js"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ]
+  }
+}
