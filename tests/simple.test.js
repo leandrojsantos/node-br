@@ -1,7 +1,7 @@
 /**
  * Teste simples para verificar se a aplicação funciona
  */
-describe('API Node BR', () => {
+describe('API Strategy Pattern', () => {
   test('deve ter configuração básica', () => {
     expect(process.env.NODE_ENV).toBeDefined();
   });
