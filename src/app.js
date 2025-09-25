@@ -17,7 +17,7 @@ const init = async () => {
   console.log('🚀 Iniciando Node BR API...');
 
   const server = Hapi.server({
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 5000,
     host: process.env.HOST || 'localhost',
     routes: {
       cors: {
@@ -37,22 +37,27 @@ const init = async () => {
     },
     {
       plugin: HapiJwt
-    },
-    {
+    }
+  ]);
+
+  // Registrar Swagger com configuração mínima
+  try {
+    await server.register({
       plugin: HapiSwagger,
       options: {
         info: {
           title: 'Node BR API Refatorada',
-          version: '3.0.0',
-          description: 'API Node.js com padrões 2025, Strategy Pattern, Jest e Swagger'
+          version: '3.0.0'
         },
         documentationPath: '/docs',
-        swaggerUIPath: '/swaggerui/',
         jsonPath: '/swagger.json',
-        lang: 'pt'
+        auth: false
       }
-    }
-  ]);
+    });
+    console.log('✅ Swagger registrado com sucesso');
+  } catch (error) {
+    console.error('❌ Erro ao registrar Swagger:', error);
+  }
 
   // Inicializar contexto de banco de dados
   console.log('📊 Inicializando banco de dados...');
@@ -71,7 +76,8 @@ const init = async () => {
     },
     verifyOptions: { algorithms: ['HS256'] }
   });
-  server.auth.default('jwt');
+  // Não definir auth padrão para evitar conflitos com Swagger
+  // server.auth.default('jwt');
 
   server.route([
     ...authRoutes(postgresContext),
@@ -111,6 +117,99 @@ const init = async () => {
           error: error.message
         }).code(500);
       }
+    }
+  });
+
+  // Rota manual para Swagger JSON (fallback)
+  server.route({
+    method: 'GET',
+    path: '/swagger-manual.json',
+    options: { auth: false },
+    handler: (request, h) => {
+      return h.response({
+        openapi: '3.0.0',
+        info: {
+          title: 'Node BR API Refatorada',
+          version: '3.0.0',
+          description: 'API Node.js com padrões 2025, Strategy Pattern, Jest e Swagger'
+        },
+        servers: [
+          {
+            url: `http://${process.env.HOST || 'localhost'}:${process.env.PORT || 5000}`,
+            description: 'Servidor de Desenvolvimento'
+          }
+        ],
+        paths: {
+          '/auth/login': {
+            post: {
+              tags: ['Auth'],
+              summary: 'Login de usuário',
+              requestBody: {
+                required: true,
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        email: { type: 'string', format: 'email' },
+                        password: { type: 'string' }
+                      },
+                      required: ['email', 'password']
+                    }
+                  }
+                }
+              },
+              responses: {
+                '200': {
+                  description: 'Login realizado com sucesso',
+                  content: {
+                    'application/json': {
+                      schema: {
+                        type: 'object',
+                        properties: {
+                          success: { type: 'boolean' },
+                          data: {
+                            type: 'object',
+                            properties: {
+                              user: { type: 'object' },
+                              token: { type: 'string' },
+                              expiresIn: { type: 'string' }
+                            }
+                          },
+                          message: { type: 'string' }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          '/health': {
+            get: {
+              tags: ['System'],
+              summary: 'Health check',
+              responses: {
+                '200': {
+                  description: 'Servidor funcionando',
+                  content: {
+                    'application/json': {
+                      schema: {
+                        type: 'object',
+                        properties: {
+                          status: { type: 'string' },
+                          timestamp: { type: 'string' },
+                          database: { type: 'string' }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }).code(200);
     }
   });
 

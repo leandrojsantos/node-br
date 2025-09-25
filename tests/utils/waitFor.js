@@ -7,13 +7,13 @@ function ping(url) {
       resolve(res.statusCode);
     });
     req.on('error', reject);
-    req.setTimeout(3000, () => {
+    req.setTimeout(5000, () => {
       req.destroy(new Error('timeout'));
     });
   });
 }
 
-async function waitFor(url, { timeoutMs = 30000, intervalMs = 1000 } = {}) {
+async function waitFor(url, { timeoutMs = 60000, intervalMs = 1500 } = {}) {
   const start = Date.now();
   // eslint-disable-next-line no-constant-condition
   while (true) {

@@ -2,7 +2,7 @@ const request = require('supertest');
 const { waitFor } = require('../utils/waitFor');
 
 describe('E2E - Heroes', () => {
-  const baseUrl = process.env.E2E_BASE_URL || 'http://localhost:3000';
+  const baseUrl = process.env.E2E_BASE_URL || 'http://localhost:5000';
 
   it('GET /heroes deve responder 200 e retornar lista paginada', async () => {
     await waitFor(`${baseUrl}/health`);

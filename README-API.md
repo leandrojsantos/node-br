@@ -1,116 +1,103 @@
-# 🚀 Node BR API - Strategy Pattern 2025
+# 📚 Documentação Técnica - API Strategy Pattern
 
-> **API Node.js moderna** com padrões arquiteturais avançados, Strategy Pattern, múltiplos bancos de dados, autenticação JWT, documentação Swagger e testes automatizados.
+> **Documentação técnica completa** da API Node.js com Strategy Pattern, múltiplos bancos de dados e autenticação JWT.
 
-[![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
-[![Yarn](https://img.shields.io/badge/Yarn-1.22+-blue.svg)](https://yarnpkg.com/)
-[![Prisma](https://img.shields.io/badge/Prisma-6.16.2-purple.svg)](https://prisma.io/)
-[![Jest](https://img.shields.io/badge/Jest-30.1.3-red.svg)](https://jestjs.io/)
-[![Swagger](https://img.shields.io/badge/Swagger-15.0.0-green.svg)](https://swagger.io/)
+## 📋 Índice Técnico
 
-## 📋 Índice
+<a href="#configuração">🔧 Configuração</a> •
+<a href="#estrutura-do-projeto">🏗️ Estrutura do Projeto</a> •
+<a href="#bancos-de-dados">🗄️ Bancos de Dados</a> •
+<a href="#autenticação">🔐 Autenticação</a> •
+<a href="#endpoints">🛣️ Endpoints</a> •
+<a href="#testes">🧪 Testes</a> •
+<a href="#containers">🐳 Containers</a> •
+<a href="#monitoramento">📊 Monitoramento</a> •
+<a href="#deploy">🚀 Deploy</a> •
+<a href="#troubleshooting">🔍 Troubleshooting</a>
 
-- [🚀 Início Rápido](#-início-rápido)
-- [⚙️ Configuração](#️-configuração)
-- [🐳 Containers](#-containers)
-- [📚 Documentação Swagger](#-documentação-swagger)
-- [🧪 Testes](#-testes)
-- [🔧 Scripts Disponíveis](#-scripts-disponíveis)
-- [❌ Erros Comuns](#-erros-comuns)
-- [🏗️ Arquitetura](#️-arquitetura)
-- [📊 Endpoints](#-endpoints)
+## 🔧 Configuração
 
-## 🚀 Início Rápido
-
-### Pré-requisitos
+### 📋 Pré-requisitos
 
 - **Node.js** >= 20.0.0
 - **Yarn** >= 1.22.0
-- **Podman** ou **Docker** (para containers)
-- **PostgreSQL** e **MongoDB** (via containers)
+- **Podman** >= 4.0.0 (ou Docker)
+- **PostgreSQL** 15+
+- **MongoDB** 7.0+
+- **Redis** 7.0+
 
-### 1. Clone e Instale
-
-```bash
-git clone <repository-url>
-cd api-strategy
-yarn install
-```
-
-### 2. Configure o Ambiente
-
-```bash
-# Copie o arquivo de exemplo
-cp env.example .env
-
-# O arquivo .env já está configurado com:
-# - DATABASE_URL para PostgreSQL
-# - MONGODB_URI para MongoDB
-# - JWT_SECRET para autenticação
-```
-
-### 3. Inicie os Containers
-
-```bash
-# Opção 1: Usando yarn (Recomendado)
-yarn podman:compose
-
-# Opção 2: Usando script direto
-./scripts/compose.sh
-```
-
-### 4. Execute as Migrações
-
-```bash
-yarn prisma:migrate
-```
-
-### 5. Inicie a Aplicação
-
-```bash
-# Desenvolvimento
-yarn dev
-
-# Produção
-yarn start
-```
-
-### 6. Acesse a API
-
-- **API Base:** http://localhost:3000
-- **Swagger UI:** http://localhost:3000/docs
-- **Health Check:** http://localhost:3000/health
-
-## ⚙️ Configuração
-
-### Variáveis de Ambiente
-
-O arquivo `.env` contém todas as configurações necessárias:
+### ⚙️ Variáveis de Ambiente
 
 ```env
 # Aplicação
 NODE_ENV=development
-PORT=3000
+PORT=5000
 HOST=localhost
 
-# PostgreSQL (Prisma)
-DATABASE_URL="postgresql://postgres:postgres123@localhost:5432/nodebr"
+# MongoDB
+MONGODB_URI=mongodb://admin:admin123@localhost:27017/nodebr?authSource=admin
 
-# MongoDB (Mongoose)
-MONGODB_URI=mongodb://nodebr:nodebr123@node-br-mongo:27017/nodebr
+# PostgreSQL + Prisma
+DATABASE_URL="postgresql://postgres:postgres123@localhost:5432/nodebr?schema=public"
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=nodebr
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres123
 
 # JWT
 JWT_SECRET=minha-chave-secreta-super-segura-2025
 
-# Redis (Opcional)
+# Redis
 REDIS_URL=redis://localhost:6379
 
 # Rate Limiting
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
+
+# Logging
+LOG_LEVEL=info
+LOG_FORMAT=combined
 ```
 
-### Estrutura do Projeto
+### 🚀 Instalação
+
+```bash
+# Clone e instale
+git clone <repository-url>
+cd api-strategy
+yarn install
+
+# Configure ambiente
+cp env.example .env
+
+# Inicie containers
+yarn podman:compose
+
+# Execute migrações caso necessário
+yarn prisma:migrate
+
+# Inicie desenvolvimento
+yarn dev
+```
+
+### 🔧 Configuração de Portas
+
+O projeto usa **duas configurações de porta** para evitar conflitos:
+
+| Modo | Comando | Porta | Descrição |
+|------|---------|-------|-----------|
+| **Desenvolvimento** | `yarn dev` | **5000** | Aplicação local com nodemon |
+| **Containers** | `yarn podman:compose` | **3000** | Aplicação em containers |
+
+**Benefícios:**
+- ✅ **Sem conflitos** de porta
+- ✅ **Desenvolvimento** e **produção** simultâneos
+- ✅ **Flexibilidade** para diferentes ambientes
+
+## 🏗️ Estrutura do Projeto
+
+### 📁 Organização de Arquivos
 
 ```
 src/
@@ -118,380 +105,403 @@ src/
 ├── config/
 │   ├── context.js         # Contexto de configuração
 │   └── database.js        # Configuração dos bancos
+├── controllers/           # Controladores da API
 ├── middleware/
 │   ├── errorHandler.js    # Tratamento de erros
 │   └── rateLimiter.js     # Rate limiting
 ├── models/
 │   ├── schemas/           # Schemas Mongoose
+│   │   ├── heroSchema.js
+│   │   └── userSchema.js
 │   └── strategies/        # Strategy Pattern implementations
+│       ├── mongoStrategy.js
+│       ├── postgresStrategy.js
+│       └── prismaStrategy.js
 ├── routes/
 │   ├── authRoutes.js      # Rotas de autenticação
 │   ├── heroRoutes.js      # Rotas de heróis
 │   └── userRoutes.js      # Rotas de usuários
-└── services/              # Serviços de negócio
+├── services/              # Serviços de negócio
+└── utils/                 # Utilitários
 ```
 
-## 🐳 Containers
+### 🎯 Strategy Pattern
 
-### Serviços Disponíveis
+O projeto implementa o Strategy Pattern para alternar entre diferentes bancos de dados:
 
-| Serviço | Porta | Descrição |
-|---------|-------|-----------|
-| **app** | 3000 | Aplicação Node.js |
-| **postgres** | 5432 | Banco PostgreSQL |
-| **mongo** | 27017 | Banco MongoDB |
-| **redis** | 6379 | Cache Redis |
-| **nginx** | 80 | Proxy reverso |
+```javascript
+// Contexto base
+class DatabaseContext {
+  constructor(strategy) {
+    this.strategy = strategy;
+  }
 
-### Comandos de Container
-
-```bash
-# Iniciar todos os serviços
-yarn podman:compose
-
-# Parar todos os serviços
-yarn podman:stop
-
-# Limpar containers e volumes
-yarn podman:clean
-
-# Ver logs da aplicação
-podman logs api-strategy_app_1
-
-# Ver logs do PostgreSQL
-podman logs api-strategy_postgres_1
-
-# Ver logs do MongoDB
-podman logs api-strategy_mongo_1
-```
-
-## 📚 Documentação Swagger
-
-### Acessando a Documentação
-
-1. **Swagger UI:** http://localhost:3000/docs
-2. **JSON Schema:** http://localhost:3000/swagger.json
-
-### Funcionalidades do Swagger
-
-- ✅ **Interface Interativa** - Teste endpoints diretamente
-- ✅ **Autenticação JWT** - Login integrado
-- ✅ **Validação de Schema** - Documentação automática
-- ✅ **Exemplos de Request/Response** - Modelos completos
-- ✅ **Códigos de Status** - Documentação de erros
-
-### Como Usar o Swagger
-
-1. **Acesse:** http://localhost:3000/docs
-2. **Faça Login:** Use o endpoint `/auth/login`
-3. **Copie o Token:** Da resposta do login
-4. **Autorize:** Clique em "Authorize" e cole o token
-5. **Teste:** Execute os endpoints protegidos
-
-### Exemplo de Login
-
-```json
-POST /auth/login
-{
-  "email": "admin@example.com",
-  "password": "123456"
+  async findById(id) {
+    return this.strategy.findById(id);
+  }
 }
-```
 
-**Resposta:**
-```json
-{
-  "success": true,
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": 1,
-    "nome": "Admin",
-    "email": "admin@example.com",
-    "role": "admin"
+// Estratégias específicas
+class MongoStrategy {
+  async findById(id) {
+    return await User.findById(id);
+  }
+}
+
+class PrismaStrategy {
+  async findById(id) {
+    return await prisma.user.findUnique({ where: { id } });
   }
 }
 ```
 
+## 🗄️ Bancos de Dados
+
+### 🍃 MongoDB
+
+**Configuração:**
+```javascript
+const mongoUri = process.env.MONGODB_URI;
+await mongoose.connect(mongoUri, {
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+});
+```
+
+**Schemas:**
+- `UserSchema` - Usuários do sistema
+- `HeroSchema` - Heróis da aplicação
+
+### 🐘 PostgreSQL
+
+**Configuração Prisma:**
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  nome            String
+  email           String    @unique
+  password        String
+  role            Role      @default(user)
+  status          Status    @default(ativo)
+  ultimoLogin     DateTime?
+  tentativasLogin Int       @default(0)
+  bloqueadoAte    DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  @@map("User")
+}
+```
+
+**Migrações:**
+```bash
+yarn prisma:migrate        # Executa migrações
+yarn prisma:generate       # Gera cliente
+yarn prisma:migrate:reset  # Reset completo
+```
+
+## 🔐 Autenticação
+
+### 🔑 JWT Implementation
+
+**Login:**
+```javascript
+const token = jwt.sign(
+  { id: user.id, email: user.email },
+  process.env.JWT_SECRET,
+  { expiresIn: '1h' }
+);
+```
+
+**Middleware de Autenticação:**
+```javascript
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ error: 'Token necessário' });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ error: 'Token inválido' });
+    req.user = user;
+    next();
+  });
+};
+```
+
+### 🛡️ Segurança
+
+- **bcrypt** para hash de senhas
+- **Helmet** para headers de segurança
+- **Rate limiting** via middleware
+- **Validação** com Joi
+- **CORS** configurado
+
+## 🛣️ Endpoints
+
+### 🔐 Autenticação
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `POST` | `/auth/login` | Login de usuário |
+| `POST` | `/auth/register` | Registro de usuário |
+| `POST` | `/auth/refresh` | Refresh token |
+| `POST` | `/auth/logout` | Logout |
+
+### 👤 Usuários
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `GET` | `/users` | Listar usuários |
+| `GET` | `/users/:id` | Buscar usuário |
+| `PUT` | `/users/:id` | Atualizar usuário |
+| `DELETE` | `/users/:id` | Deletar usuário |
+
+### 🦸 Heróis
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `GET` | `/heroes` | Listar heróis |
+| `GET` | `/heroes/:id` | Buscar herói |
+| `POST` | `/heroes` | Criar herói |
+| `PUT` | `/heroes/:id` | Atualizar herói |
+| `DELETE` | `/heroes/:id` | Deletar herói |
+
+### 📊 Sistema
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `GET` | `/health` | Health check |
+| `GET` | `/docs` | Documentação Swagger |
+
 ## 🧪 Testes
 
-### Executando Testes
+### 📋 Estrutura de Testes
+
+```
+tests/
+├── unit/              # Testes unitários
+├── integration/       # Testes de integração
+├── e2e/              # Testes end-to-end
+│   ├── auth.e2e.test.js
+│   ├── health.e2e.test.js
+│   └── heroes.e2e.test.js
+├── setup.js          # Configuração dos testes
+└── utils/
+    └── waitFor.js    # Utilitários de teste
+```
+
+### 🚀 Executar Testes
 
 ```bash
 # Todos os testes
 yarn test
 
-# Testes em modo watch
-yarn test:watch
+# Testes unitários
+yarn test:unit
 
-# Testes com coverage
+# Testes de integração
+yarn test:integration
+
+# Testes E2E
+yarn test:e2e
+
+# Com cobertura
 yarn test:coverage
 
-# Testes para CI/CD
-yarn test:ci
+# Modo watch
+yarn test:watch
 ```
 
-### Estrutura de Testes
+### 📊 Cobertura de Testes
 
-```
-tests/
-├── setup.js              # Configuração global
-├── e2e/                  # Testes end-to-end
-│   ├── auth.e2e.test.js
-│   ├── health.e2e.test.js
-│   └── heroes.e2e.test.js
-├── integration/          # Testes de integração
-├── unit/                 # Testes unitários
-└── utils/
-    └── waitFor.js        # Utilitários de teste
-```
+- **Unitários**: Funções isoladas
+- **Integração**: Componentes interagindo
+- **E2E**: Fluxos completos
+- **Cobertura**: > 80% esperada
 
-### Exemplo de Teste
+## 🐳 Containers
 
-```javascript
-// tests/e2e/auth.e2e.test.js
-import { describe, test, expect } from '@jest/globals';
-import request from 'supertest';
+### 🚀 Podman Compose
 
-describe('Auth Endpoints', () => {
-  test('POST /auth/login - Deve fazer login com sucesso', async () => {
-    const response = await request(app)
-      .post('/auth/login')
-      .send({
-        email: 'admin@example.com',
-        password: '123456'
-      });
-
-    expect(response.status).toBe(200);
-    expect(response.body.success).toBe(true);
-    expect(response.body.token).toBeDefined();
-  });
-});
+**Serviços:**
+```yaml
+services:
+  app:          # Aplicação Node.js
+  postgres:     # Banco PostgreSQL
+  mongo:        # Banco MongoDB
+  redis:        # Cache Redis
+  nginx:        # Proxy reverso
 ```
 
-### Coverage Report
-
-Após executar `yarn test:coverage`, acesse:
-- **HTML Report:** `coverage/lcov-report/index.html`
-- **Terminal:** Cobertura exibida no console
-
-## 🔧 Scripts Disponíveis
-
-### Desenvolvimento
-
+**Comandos:**
 ```bash
-yarn dev              # Inicia em modo desenvolvimento
-yarn start            # Inicia em modo produção
-yarn tsc              # Compila TypeScript
-```
-
-### Testes
-
-```bash
-yarn test             # Executa todos os testes
-yarn test:watch       # Testes em modo watch
-yarn test:coverage    # Testes com cobertura
-yarn test:ci          # Testes para CI/CD
-```
-
-### Qualidade de Código
-
-```bash
-yarn lint             # Verifica linting
-yarn lint:fix         # Corrige problemas de linting
-yarn format           # Formata código com Prettier
-```
-
-### Containers
-
-```bash
-yarn podman:build     # Build da imagem
-yarn podman:run       # Executa container
-yarn podman:start     # Inicia todos os serviços
-yarn podman:stop      # Para todos os serviços
+yarn podman:compose   # Sobe todos os serviços
+yarn podman:stop      # Para containers
 yarn podman:clean     # Limpa containers e volumes
-yarn podman:compose   # Compose completo (recomendado)
 ```
 
-### Banco de Dados
+### 📊 Portas
 
+| Serviço | Porta Interna | Porta Externa | Descrição |
+|---------|---------------|---------------|-----------|
+| **app (containers)** | 3000 | 3000 | Aplicação em containers |
+| **app (desenvolvimento)** | 5000 | 5000 | Aplicação local (yarn dev) |
+| **postgres** | 5432 | 5432 | Banco PostgreSQL |
+| **mongo** | 27017 | 27017 | Banco MongoDB |
+| **redis** | 6379 | 6379 | Cache Redis |
+| **nginx** | 80 | 8080 | Proxy reverso |
+
+## 📊 Monitoramento
+
+### 🔍 Health Checks
+
+**Endpoint básico (desenvolvimento):**
 ```bash
-yarn prisma:generate  # Gera Prisma Client
-yarn prisma:migrate   # Executa migrações
+curl http://localhost:5000/health
 ```
 
-## ❌ Erros Comuns
-
-### 1. Erro de Conexão com MongoDB
-
+**Endpoint básico (containers):**
 ```bash
+curl http://localhost:5000/health
+```
+
+**Resposta:**
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-01-27T10:00:00.000Z",
+  "uptime": 3600,
+  "database": "connected",
+  "version": "3.0.0"
+}
+```
+
+### 📈 Logs Estruturados
+
+```json
+{
+  "timestamp": "2025-01-27T10:00:00.000Z",
+  "level": "info",
+  "message": "Servidor iniciado",
+  "port": 3000,
+  "environment": "development"
+}
+```
+
+### 📊 Métricas
+
+- **Uptime** do servidor
+- **Conexões** de banco
+- **Requests** por minuto
+- **Erros** e exceções
+
+## 🚀 Deploy
+
+### 🌐 Produção
+
+**Variáveis de ambiente:**
+```env
+NODE_ENV=production
+PORT=3000
+HOST=0.0.0.0
+
+# Bancos de dados
+MONGODB_URI=mongodb://admin:admin123@mongo:27017/nodebr?authSource=admin
+DATABASE_URL=postgresql://postgres:postgres123@postgres:5432/nodebr?schema=public
+
+# Segurança
+JWT_SECRET=your-super-secret-jwt-key
+```
+
+### 🐳 Docker/Podman
+
+**Build:**
+```bash
+podman build -t api-strategy .
+```
+
+**Run:**
+```bash
+podman run -p 3000:3000 api-strategy
+```
+
+### ☁️ CI/CD
+
+**Pipeline:**
+1. **Lint** e formatação
+2. **Testes** unitários e integração
+3. **Testes E2E**
+4. **Build** de containers
+5. **Análise** de segurança
+6. **Deploy** automático
+
+## 🔍 Troubleshooting
+
+### ❌ Problemas Comuns
+
+#### 1. Erro de Conexão MongoDB
+```
 ❌ Erro ao conectar MongoDB: getaddrinfo ENOTFOUND node-br-mongo
 ```
 
 **Solução:**
-```bash
-# Inicie os containers primeiro
-yarn podman:compose
+- Verifique se o container MongoDB está rodando
+- Confirme as credenciais no `.env`
+- Teste conectividade: `yarn podman:compose`
 
-# Aguarde todos os serviços subirem
-# Depois execute:
-yarn dev
+#### 2. Erro de Migração Prisma
 ```
-
-### 2. Erro de DATABASE_URL
-
-```bash
-❌ Environment variable not found: DATABASE_URL
-```
-
-**Solução:**
-```bash
-# Copie o arquivo de exemplo
-cp env.example .env
-
-# Verifique se DATABASE_URL está definida
-cat .env | grep DATABASE_URL
-```
-
-### 3. Erro de Migração
-
-```bash
 ❌ Drift detected: Your database schema is not in sync
 ```
 
 **Solução:**
 ```bash
-# Reset o banco (CUIDADO: apaga dados)
-npx prisma migrate reset --force
-
-# Ou execute migrações
+yarn prisma:migrate:reset
 yarn prisma:migrate
 ```
 
-### 4. Erro de Porta em Uso
-
-```bash
-❌ Error: listen EADDRINUSE: address already in use :::3000
+#### 3. Porta em Uso
+```
+❌ Error: listen EADDRINUSE: address already in use ::1:5000
 ```
 
 **Solução:**
 ```bash
-# Pare containers existentes
-yarn podman:stop
-
-# Ou use outra porta
-PORT=3001 yarn dev
+podman stop api-strategy_app_1
+yarn dev
 ```
 
-### 5. Erro de Permissão
-
-```bash
-❌ Permission denied: ./scripts/compose.sh
+#### 4. Erro de Autenticação
+```
+❌ Token inválido
 ```
 
 **Solução:**
-```bash
-# Dê permissão de execução
-chmod +x scripts/*.sh
+- Verifique `JWT_SECRET` no `.env`
+- Confirme formato do token: `Bearer <token>`
 
-# Execute novamente
-yarn podman:compose
-```
-
-## 🏗️ Arquitetura
-
-### Strategy Pattern
-
-O projeto implementa o **Strategy Pattern** para diferentes tipos de banco de dados:
-
-```javascript
-// Estratégias disponíveis
-- MongoStrategy     // MongoDB com Mongoose
-- PostgresStrategy  // PostgreSQL com Prisma
-- PrismaStrategy    // PostgreSQL com Prisma ORM
-```
-
-### Padrões Utilizados
-
-- ✅ **Strategy Pattern** - Múltiplos bancos de dados
-- ✅ **Repository Pattern** - Abstração de dados
-- ✅ **Middleware Pattern** - Interceptação de requests
-- ✅ **JWT Authentication** - Autenticação stateless
-- ✅ **Rate Limiting** - Controle de requisições
-- ✅ **Error Handling** - Tratamento centralizado
-
-### Fluxo de Dados
-
-```
-Request → Middleware → Routes → Services → Strategies → Database
-   ↓
-Response ← Middleware ← Routes ← Services ← Strategies ← Database
-```
-
-## 📊 Endpoints
-
-### Autenticação
-
-| Método | Endpoint | Descrição | Auth |
-|--------|----------|-----------|------|
-| POST | `/auth/login` | Login de usuário | ❌ |
-| POST | `/auth/register` | Registro de usuário | ❌ |
-| POST | `/auth/logout` | Logout de usuário | ✅ |
-| GET | `/auth/profile` | Perfil do usuário | ✅ |
-
-### Heróis
-
-| Método | Endpoint | Descrição | Auth |
-|--------|----------|-----------|------|
-| GET | `/heroes` | Lista heróis | ✅ |
-| GET | `/heroes/{id}` | Busca herói por ID | ✅ |
-| POST | `/heroes` | Cria novo herói | ✅ |
-| PUT | `/heroes/{id}` | Atualiza herói | ✅ |
-| DELETE | `/heroes/{id}` | Remove herói | ✅ |
-
-### Sistema
-
-| Método | Endpoint | Descrição | Auth |
-|--------|----------|-----------|------|
-| GET | `/health` | Health check | ❌ |
-| GET | `/test` | Teste de conexão | ❌ |
-| GET | `/docs` | Documentação Swagger | ❌ |
-
-### Exemplos de Uso
-
-#### 1. Login e Obter Token
+### 🔧 Comandos de Diagnóstico
 
 ```bash
-curl -X POST http://localhost:3000/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email": "admin@example.com", "password": "123456"}'
+# Status dos containers
+podman ps
+
+# Logs da aplicação
+podman logs api-strategy_app_1
+
+# Logs do MongoDB
+podman logs api-strategy_mongo_1
+
+# Logs do PostgreSQL
+podman logs api-strategy_postgres_1
+
+# Teste de conectividade
+curl http://localhost:5000/health
 ```
-
-#### 2. Listar Heróis (com Token)
-
-```bash
-curl -X GET http://localhost:3000/heroes \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI"
-```
-
-#### 3. Health Check
-
-```bash
-curl http://localhost:3000/health
-```
-
----
-
-## 📞 Suporte
-
-Para dúvidas ou problemas:
-
-1. **Verifique os logs:** `podman logs api-strategy_app_1`
-2. **Execute os testes:** `yarn test`
-3. **Verifique a documentação:** http://localhost:3000/docs
-4. **Consulte este README** para soluções comuns
-
----
-
-**Desenvolvido com ❤️ por Leandro Santos**
-
-*API Node.js moderna com padrões arquiteturais avançados - 2025*

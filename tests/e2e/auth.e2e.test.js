@@ -2,7 +2,7 @@ const request = require('supertest');
 const { waitFor } = require('../utils/waitFor');
 
 describe('E2E - Auth flow (register -> login -> POST /heroes)', () => {
-  const baseUrl = process.env.E2E_BASE_URL || 'http://localhost:3000';
+  const baseUrl = process.env.E2E_BASE_URL || 'http://localhost:5000';
   const email = `user_${Date.now()}@test.com`;
   const password = '123456';
 

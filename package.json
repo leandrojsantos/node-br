@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
+    "dev": "node -e \"if(!require('fs').existsSync('.env')){require('fs').copyFileSync('env.example','.env');console.log('✅ Arquivo .env criado a partir do env.example');}\" && nodemon src/app.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
