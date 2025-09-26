@@ -1,78 +1,111 @@
 # 🚀 API Strategy Pattern
 
-> **API Node.js moderna** com Strategy Pattern, múltiplos bancos de dados, autenticação JWT e documentação Swagger completa.
+> **API Node.js** demonstrando o padrão Strategy para alternância entre múltiplos bancos de dados
 
-[![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-blue.svg)](https://www.typescriptlang.org/)
+<div align="center">
+
+[![Node.js](https://img.shields.io/badge/Node.js-22+-green.svg)](https://nodejs.org/)
 [![Prisma](https://img.shields.io/badge/Prisma-6.16+-purple.svg)](https://www.prisma.io/)
 [![Jest](https://img.shields.io/badge/Jest-30+-red.svg)](https://jestjs.io/)
 [![Podman](https://img.shields.io/badge/Podman-4.0+-orange.svg)](https://podman.io/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+</div>
+
+---
 
 ## 📋 Índice
 
-<a href="#visão-geral">🎯 Visão Geral</a> •
-<a href="#funcionalidades">✨ Funcionalidades</a> •
-<a href="#arquitetura">🏗️ Arquitetura</a> •
-<a href="#início-rápido">🚀 Início Rápido</a> •
-<a href="#documentação">📚 Documentação</a> •
-<a href="#contribuição">🤝 Contribuição</a>
+| Seção | Descrição |
+|-------|-----------|
+| [🎯 Sobre](#-sobre) | Visão geral do projeto |
+| [✨ Funcionalidades](#-funcionalidades) | Recursos disponíveis |
+| [🏗️ Arquitetura](#️-arquitetura) | Estrutura do projeto |
+| [🚀 Início Rápido](#-início-rápido) | Instalação e execução |
+| [📚 Documentação](#-documentação) | Links para documentação técnica |
+| [🤝 Contribuição](#-contribuição) | Como contribuir |
 
-## 🎯 Visão Geral
+---
 
-Esta API demonstra a implementação do **Strategy Pattern** em Node.js, permitindo alternar entre diferentes bancos de dados (MongoDB, PostgreSQL) de forma transparente. Ideal para projetos que precisam de flexibilidade e escalabilidade.
+## 🎯 Sobre
+
+Esta API demonstra a implementação do **Strategy Pattern** em Node.js, permitindo alternar entre diferentes bancos de dados (MongoDB, PostgreSQL) de forma transparente.
 
 ### 🎨 Características Principais
 
-- **Strategy Pattern** para múltiplos bancos de dados
-- **Autenticação JWT** com refresh tokens
-- **Documentação Swagger** automática
-- **Testes completos** (unitários, integração, E2E)
-- **Containers Podman** para desenvolvimento
-- **TypeScript** com tipagem gradual
-- **Rate Limiting** e segurança avançada
+| Característica | Descrição |
+|----------------|-----------|
+| 🔄 **Strategy Pattern** | Alternância entre múltiplos bancos de dados |
+| 🔐 **Autenticação JWT** | Sistema de autenticação seguro |
+| 📖 **Swagger UI** | Documentação automática da API |
+| 🧪 **Testes Jest** | Cobertura de testes E2E e unitários |
+| 🐳 **Containers Podman** | Ambiente de desenvolvimento isolado |
+| 🧹 **Código Limpo** | Estrutura organizada e manutenível |
+
+---
 
 ## ✨ Funcionalidades
 
-### 🔐 Autenticação & Autorização
-- [Login com JWT](#-autenticação)
-- [Refresh tokens](#-refresh-tokens)
-- [Middleware de autorização](#-middleware)
-- [Rate limiting](#-rate-limiting)
+### 🔐 Autenticação
+
+| Funcionalidade | Tecnologia | Descrição |
+|----------------|------------|-----------|
+| **Login** | JWT | Autenticação com tokens seguros |
+| **Registro** | bcryptjs | Hash de senhas |
+| **Validação** | Joi | Validação de dados de entrada |
 
 ### 🗄️ Bancos de Dados
-- [MongoDB com Mongoose](#-mongodb)
-- [PostgreSQL com Prisma](#-postgresql)
-- [Strategy Pattern](#-strategy-pattern)
-- [Migrações automáticas](#-migrações)
+
+| Banco | Tecnologia | Uso |
+|-------|------------|-----|
+| **MongoDB** | Mongoose | Dados de heróis |
+| **PostgreSQL** | Prisma | Dados de usuários |
+| **Strategy** | Pattern | Alternância transparente |
 
 ### 📖 Documentação
-- [Técnica Completa](#-técnica-completa)
-👉 **[README-API.md](./README-API.md)** - Documentação técnica detalhada
-- [Swagger UI](#-swagger-ui)
-- [Endpoints RESTful](#-endpoints)
-- [Validação com Joi](#-validação)
-- [Health checks](#-health-checks)
+
+| Recurso | Descrição |
+|---------|-----------|
+| **Swagger UI** | Interface interativa |
+| **Endpoints** | API RESTful completa |
+| **Health Check** | Monitoramento de saúde |
+
+---
 
 ## 🏗️ Arquitetura
 
 ```
 src/
-├── 📁 config/          # Configurações e contexto
-├── 📁 controllers/     # Controladores da API
-├── 📁 middleware/      # Middlewares customizados
-├── 📁 models/          # Modelos e estratégias
-│   ├── schemas/        # Schemas Mongoose
-│   └── strategies/     # Implementações Strategy Pattern
-├── 📁 routes/          # Definição de rotas
-├── 📁 services/        # Lógica de negócio
-└── 📁 utils/           # Utilitários
+├── app.js                 # 🚀 Aplicação principal
+├── config/
+│   ├── context.js         # 🔄 Contexto Strategy Pattern
+│   └── database.js        # 🗄️ Configuração dos bancos
+├── models/
+│   ├── schemas/           # 📊 Schemas Mongoose
+│   │   └── heroSchema.js
+│   └── strategies/        # 🔄 Implementações Strategy Pattern
+│       ├── mongoStrategy.js
+│       └── prismaStrategy.js
+└── routes/
+    ├── authRoutes.js      # 🔐 Rotas de autenticação
+    └── heroRoutes.js      # 🦸 Rotas de heróis
 ```
 
+### 🔄 Strategy Pattern
+
+O projeto implementa o Strategy Pattern para alternar entre diferentes bancos de dados:
+
+- **MongoDB Strategy** — Para dados não relacionais
+- **Prisma Strategy** — Para ORM moderno
+
+---
+
+## 🚀 Início Rápido
 
 ### 📋 Pré-requisitos
 
-- **Node.js** 20+
-- **Yarn** 1.22+
+- **Node.js** 22+ (LTS)
+- **Yarn** 4.0+
 - **Podman** 4.0+ (ou Docker)
 
 ### ⚡ Instalação
@@ -89,26 +122,48 @@ yarn install
 cp env.example .env
 
 # Inicie containers
-yarn podman:compose
+yarn compose:up
 
-# Execute migrações caso necessário
+# Execute migrações
 yarn prisma:migrate
 
 # Inicie desenvolvimento
 yarn dev
 ```
 
+
 ### 🌐 Acessos URL
 
-- **API (Desenvolvimento)**: http://localhost:5000
-- **API (Containers)**: http://localhost:3000
-- **Swagger (Desenvolvimento)**: http://localhost:5000/docs
-- **Swagger (Containers)**: http://localhost:3000/docs
-- **Health Check (Desenvolvimento)**: http://localhost:5000/health
-- **Health Check (Containers)**: http://localhost:3000/health
+| Serviço | Desenvolvimento | Containers |
+|---------|-----------------|------------|
+| **API** | http://localhost:5000 | http://localhost:3000 |
+| **Swagger** | http://localhost:5000/docs | http://localhost:3000/docs |
+| **Health** | http://localhost:5000/health | http://localhost:3000/health |
 
+---
+
+## 📚 Documentação
+
+### 📖 Documentação Técnica
+
+Para informações técnicas detalhadas, consulte:
+
+- **[README-API.md](./README-API.md)** — Documentação técnica completa
+- **[Swagger UI](http://localhost:5000/docs)** — Documentação interativa da API
+- **[Health Check](http://localhost:5000/health)** — Status da aplicação
+
+### 🔗 Links Úteis
+
+- [Strategy Pattern](https://refactoring.guru/design-patterns/strategy) — Padrão de design
+- [Hapi.js](https://hapi.dev/) — Framework web
+- [Prisma](https://www.prisma.io/) — ORM moderno
+- [Jest](https://jestjs.io/) — Framework de testes
+
+---
 
 ## 🤝 Contribuição
+
+### 📋 Como Contribuir
 
 1. **Fork** o projeto
 2. **Crie** uma branch (`git checkout -b feature/AmazingFeature`)
@@ -118,9 +173,10 @@ yarn dev
 
 ### 📋 Padrões de Código
 
-- **ESLint** para qualidade
-- **Prettier** para formatação
-- **Jest** para testes
-- **TypeScript** para tipagem
+| Ferramenta | Uso |
+|------------|-----|
+| **ESLint** | Qualidade de código |
+| **Prettier** | Formatação automática |
+| **Jest** | Testes automatizados |
+| **Strategy Pattern** | Organização de código |
 
----

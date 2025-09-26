@@ -25,7 +25,7 @@ services:
 
   # MongoDB
   mongo:
-    image: mongo:7.0
+    image: docker.io/library/mongo:7.0
     ports:
       - "27017:27017"
     environment:
@@ -41,7 +41,7 @@ services:
 
   # PostgreSQL
   postgres:
-    image: postgres:15-alpine
+    image: docker.io/library/postgres:15-alpine
     ports:
       - "5432:5432"
     environment:
@@ -58,7 +58,7 @@ services:
 
   # Redis para cache e rate limiting
   redis:
-    image: redis:7-alpine
+    image: docker.io/library/redis:7-alpine
     ports:
       - "6379:6379"
     volumes:
@@ -70,7 +70,7 @@ services:
 
   # Nginx como proxy reverso
   nginx:
-    image: nginx:alpine
+    image: docker.io/library/nginx:alpine
     ports:
       - "8080:80"
       - "8443:443"

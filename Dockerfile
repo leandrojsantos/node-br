@@ -1,8 +1,8 @@
-# Use Node.js LTS Alpine para imagem menor e mais segura
-FROM node:20-alpine
+# Use Node.js 22 LTS Alpine para imagem menor e mais segura
+FROM docker.io/library/node:22-alpine
 
-# Instalar Yarn globalmente (forçar se já existir)
-RUN npm install -g yarn --force
+# Yarn já está incluído na imagem Node.js
+# RUN npm install -g yarn
 
 # Definir diretório de trabalho
 WORKDIR /app
@@ -10,14 +10,14 @@ WORKDIR /app
 # Copiar arquivos de dependências
 COPY package.json yarn.lock ./
 
-# Instalar dependências (incluindo dev para Prisma)
-RUN yarn install --frozen-lockfile
+# Instalar dependências
+RUN yarn install
 
 # Copiar código fonte
 COPY . .
 
-# Gerar Prisma Client
-RUN npx prisma generate
+# Build da aplicação (se necessário)
+# RUN yarn build
 
 # Criar usuário não-root para segurança
 RUN addgroup -g 1001 -S nodejs && \

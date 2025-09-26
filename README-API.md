@@ -1,30 +1,45 @@
 # 📚 Documentação Técnica - API Strategy Pattern
 
-> **Documentação técnica completa** da API Node.js com Strategy Pattern, múltiplos bancos de dados e autenticação JWT.
+> **Documentação técnica completa** da API Node.js com Strategy Pattern para múltiplos bancos de dados
+
+<div align="center">
+
+[![Node.js](https://img.shields.io/badge/Node.js-22+-green.svg)](https://nodejs.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-6.16+-purple.svg)](https://www.prisma.io/)
+[![Jest](https://img.shields.io/badge/Jest-30+-red.svg)](https://jestjs.io/)
+[![Podman](https://img.shields.io/badge/Podman-4.0+-orange.svg)](https://podman.io/)
+
+</div>
+
+---
 
 ## 📋 Índice Técnico
 
-<a href="#configuração">🔧 Configuração</a> •
-<a href="#estrutura-do-projeto">🏗️ Estrutura do Projeto</a> •
-<a href="#bancos-de-dados">🗄️ Bancos de Dados</a> •
-<a href="#autenticação">🔐 Autenticação</a> •
-<a href="#endpoints">🛣️ Endpoints</a> •
-<a href="#testes">🧪 Testes</a> •
-<a href="#containers">🐳 Containers</a> •
-<a href="#monitoramento">📊 Monitoramento</a> •
-<a href="#deploy">🚀 Deploy</a> •
-<a href="#troubleshooting">🔍 Troubleshooting</a>
+| Seção | Descrição |
+|-------|-----------|
+| [🔧 Configuração](#-configuração) | Pré-requisitos e instalação |
+| [🏗️ Estrutura do Projeto](#️-estrutura-do-projeto) | Organização de arquivos |
+| [🗄️ Bancos de Dados](#️-bancos-de-dados) | MongoDB e PostgreSQL |
+| [🔐 Autenticação](#-autenticação) | JWT e segurança |
+| [🛣️ Endpoints](#️-endpoints) | API RESTful |
+| [🧪 Testes](#-testes) | E2E e cobertura |
+| [🐳 Containers](#-containers) | Podman Compose |
+| [🚀 Deploy](#-deploy) | Produção e CI/CD |
+| [🔍 Troubleshooting](#-troubleshooting) | Solução de problemas |
+
+---
 
 ## 🔧 Configuração
 
 ### 📋 Pré-requisitos
 
-- **Node.js** >= 20.0.0
-- **Yarn** >= 1.22.0
-- **Podman** >= 4.0.0 (ou Docker)
-- **PostgreSQL** 15+
-- **MongoDB** 7.0+
-- **Redis** 7.0+
+| Tecnologia | Versão | Descrição |
+|------------|--------|-----------|
+| **Node.js** | >= 22.0.0 (LTS) | Runtime JavaScript |
+| **Yarn** | >= 4.0.0 | Gerenciador de pacotes |
+| **Podman** | >= 4.0.0 | Containers (ou Docker) |
+| **PostgreSQL** | 15+ | Banco relacional |
+| **MongoDB** | 7.0+ | Banco NoSQL |
 
 ### ⚙️ Variáveis de Ambiente
 
@@ -48,16 +63,8 @@ POSTGRES_PASSWORD=postgres123
 # JWT
 JWT_SECRET=minha-chave-secreta-super-segura-2025
 
-# Redis
-REDIS_URL=redis://localhost:6379
-
-# Rate Limiting
-RATE_LIMIT_WINDOW_MS=900000
-RATE_LIMIT_MAX_REQUESTS=100
-
 # Logging
 LOG_LEVEL=info
-LOG_FORMAT=combined
 ```
 
 ### 🚀 Instalação
@@ -72,9 +79,12 @@ yarn install
 cp env.example .env
 
 # Inicie containers
-yarn podman:compose
+yarn compose:up
 
-# Execute migrações caso necessário
+# Novas migrações
+yarn prisma:reset
+
+# Execute migrações
 yarn prisma:migrate
 
 # Inicie desenvolvimento
@@ -88,41 +98,37 @@ O projeto usa **duas configurações de porta** para evitar conflitos:
 | Modo | Comando | Porta | Descrição |
 |------|---------|-------|-----------|
 | **Desenvolvimento** | `yarn dev` | **5000** | Aplicação local com nodemon |
-| **Containers** | `yarn podman:compose` | **3000** | Aplicação em containers |
+| **Containers** | `yarn compose:up` | **3000** | Aplicação em containers |
 
-**Benefícios:**
-- ✅ **Sem conflitos** de porta
-- ✅ **Desenvolvimento** e **produção** simultâneos
-- ✅ **Flexibilidade** para diferentes ambientes
+#### ✅ Benefícios
+
+| Benefício | Descrição |
+|-----------|-----------|
+| **Sem conflitos** | Portas diferentes evitam problemas |
+| **Simultâneo** | Desenvolvimento e produção juntos |
+| **Flexibilidade** | Diferentes ambientes configuráveis |
+
+---
 
 ## 🏗️ Estrutura do Projeto
 
-### 📁 Organização de Arquivos
+### 📁 Organização Simplificada
 
 ```
 src/
 ├── app.js                 # Aplicação principal
 ├── config/
-│   ├── context.js         # Contexto de configuração
+│   ├── context.js         # Contexto Strategy Pattern
 │   └── database.js        # Configuração dos bancos
-├── controllers/           # Controladores da API
-├── middleware/
-│   ├── errorHandler.js    # Tratamento de erros
-│   └── rateLimiter.js     # Rate limiting
 ├── models/
 │   ├── schemas/           # Schemas Mongoose
-│   │   ├── heroSchema.js
-│   │   └── userSchema.js
+│   │   └── heroSchema.js
 │   └── strategies/        # Strategy Pattern implementations
 │       ├── mongoStrategy.js
-│       ├── postgresStrategy.js
 │       └── prismaStrategy.js
-├── routes/
-│   ├── authRoutes.js      # Rotas de autenticação
-│   ├── heroRoutes.js      # Rotas de heróis
-│   └── userRoutes.js      # Rotas de usuários
-├── services/              # Serviços de negócio
-└── utils/                 # Utilitários
+└── routes/
+    ├── authRoutes.js      # Rotas de autenticação
+    └── heroRoutes.js      # Rotas de heróis
 ```
 
 ### 🎯 Strategy Pattern
@@ -144,7 +150,7 @@ class DatabaseContext {
 // Estratégias específicas
 class MongoStrategy {
   async findById(id) {
-    return await User.findById(id);
+    return await Hero.findById(id);
   }
 }
 
@@ -154,6 +160,8 @@ class PrismaStrategy {
   }
 }
 ```
+
+---
 
 ## 🗄️ Bancos de Dados
 
@@ -169,8 +177,7 @@ await mongoose.connect(mongoUri, {
 ```
 
 **Schemas:**
-- `UserSchema` - Usuários do sistema
-- `HeroSchema` - Heróis da aplicação
+- `HeroSchema` — Heróis da aplicação
 
 ### 🐘 PostgreSQL
 
@@ -203,8 +210,10 @@ model User {
 ```bash
 yarn prisma:migrate        # Executa migrações
 yarn prisma:generate       # Gera cliente
-yarn prisma:migrate:reset  # Reset completo
+yarn prisma:reset          # Reset completo
 ```
+
+---
 
 ## 🔐 Autenticação
 
@@ -237,11 +246,14 @@ const authenticateToken = (req, res, next) => {
 
 ### 🛡️ Segurança
 
-- **bcrypt** para hash de senhas
-- **Helmet** para headers de segurança
-- **Rate limiting** via middleware
-- **Validação** com Joi
-- **CORS** configurado
+| Tecnologia | Uso | Descrição |
+|------------|-----|-----------|
+| **bcrypt** | Hash de senhas | Criptografia segura |
+| **Joi** | Validação | Validação de entrada |
+| **CORS** | Headers | Controle de origem |
+| **JWT** | Autenticação | Tokens seguros |
+
+---
 
 ## 🛣️ Endpoints
 
@@ -280,14 +292,14 @@ const authenticateToken = (req, res, next) => {
 | `GET` | `/health` | Health check |
 | `GET` | `/docs` | Documentação Swagger |
 
+---
+
 ## 🧪 Testes
 
 ### 📋 Estrutura de Testes
 
 ```
 tests/
-├── unit/              # Testes unitários
-├── integration/       # Testes de integração
 ├── e2e/              # Testes end-to-end
 │   ├── auth.e2e.test.js
 │   ├── health.e2e.test.js
@@ -303,14 +315,8 @@ tests/
 # Todos os testes
 yarn test
 
-# Testes unitários
-yarn test:unit
-
-# Testes de integração
-yarn test:integration
-
-# Testes E2E
-yarn test:e2e
+# Testes E2E (mesmo comando)
+yarn test
 
 # Com cobertura
 yarn test:coverage
@@ -321,10 +327,12 @@ yarn test:watch
 
 ### 📊 Cobertura de Testes
 
-- **Unitários**: Funções isoladas
-- **Integração**: Componentes interagindo
-- **E2E**: Fluxos completos
-- **Cobertura**: > 80% esperada
+| Tipo | Descrição | Meta |
+|------|-----------|------|
+| **E2E** | Fluxos completos | 100% dos endpoints |
+| **Cobertura** | Código testado | > 80% esperada |
+
+---
 
 ## 🐳 Containers
 
@@ -342,9 +350,9 @@ services:
 
 **Comandos:**
 ```bash
-yarn podman:compose   # Sobe todos os serviços
-yarn podman:stop      # Para containers
-yarn podman:clean     # Limpa containers e volumes
+yarn compose:up       # Sobe todos os serviços
+yarn compose:down     # Para containers
+yarn compose:clean    # Limpa containers e volumes
 ```
 
 ### 📊 Portas
@@ -355,8 +363,8 @@ yarn podman:clean     # Limpa containers e volumes
 | **app (desenvolvimento)** | 5000 | 5000 | Aplicação local (yarn dev) |
 | **postgres** | 5432 | 5432 | Banco PostgreSQL |
 | **mongo** | 27017 | 27017 | Banco MongoDB |
-| **redis** | 6379 | 6379 | Cache Redis |
-| **nginx** | 80 | 8080 | Proxy reverso |
+
+---
 
 ## 📊 Monitoramento
 
@@ -383,24 +391,13 @@ curl http://localhost:5000/health
 }
 ```
 
-### 📈 Logs Estruturados
+### 📈 Logs
 
-```json
-{
-  "timestamp": "2025-01-27T10:00:00.000Z",
-  "level": "info",
-  "message": "Servidor iniciado",
-  "port": 3000,
-  "environment": "development"
-}
-```
+- **Console** para desenvolvimento
+- **Estruturados** para produção
+- **Níveis**: info, warn, error
 
-### 📊 Métricas
-
-- **Uptime** do servidor
-- **Conexões** de banco
-- **Requests** por minuto
-- **Erros** e exceções
+---
 
 ## 🚀 Deploy
 
@@ -434,13 +431,14 @@ podman run -p 3000:3000 api-strategy
 
 ### ☁️ CI/CD
 
-**Pipeline:**
-1. **Lint** e formatação
-2. **Testes** unitários e integração
-3. **Testes E2E**
-4. **Build** de containers
-5. **Análise** de segurança
-6. **Deploy** automático
+| Etapa | Descrição | Ferramenta |
+|-------|-----------|------------|
+| **1. Lint** | Formatação e qualidade | ESLint + Prettier |
+| **2. Testes** | Validação E2E | Jest |
+| **3. Build** | Containers | Podman |
+| **4. Deploy** | Publicação automática | GitHub Actions |
+
+---
 
 ## 🔍 Troubleshooting
 
@@ -454,7 +452,7 @@ podman run -p 3000:3000 api-strategy
 **Solução:**
 - Verifique se o container MongoDB está rodando
 - Confirme as credenciais no `.env`
-- Teste conectividade: `yarn podman:compose`
+- Teste conectividade: `yarn compose:up`
 
 #### 2. Erro de Migração Prisma
 ```
@@ -463,7 +461,7 @@ podman run -p 3000:3000 api-strategy
 
 **Solução:**
 ```bash
-yarn prisma:migrate:reset
+yarn prisma:reset
 yarn prisma:migrate
 ```
 
@@ -474,7 +472,7 @@ yarn prisma:migrate
 
 **Solução:**
 ```bash
-podman stop api-strategy_app_1
+yarn compose:down
 yarn dev
 ```
 
@@ -494,7 +492,7 @@ yarn dev
 podman ps
 
 # Logs da aplicação
-podman logs api-strategy_app_1
+podman-compose -f podman-compose.yml logs
 
 # Logs do MongoDB
 podman logs api-strategy_mongo_1
