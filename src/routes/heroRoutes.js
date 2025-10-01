@@ -8,7 +8,6 @@ export const heroRoutes = (dbContext) => [
       auth: false,
       tags: ['api', 'heroes'],
       description: 'Lista todos os heróis',
-      notes: 'Retorna uma lista paginada de heróis',
       validate: {
         query: Joi.object({
           page: Joi.number().integer().min(1).default(1).description('Número da página'),
@@ -24,7 +23,7 @@ export const heroRoutes = (dbContext) => [
         const skip = (page - 1) * limit;
 
         const result = await dbContext.read(filters);
-        
+
         if (!result.success) {
           return h.response(result).code(500);
         }
@@ -60,7 +59,6 @@ export const heroRoutes = (dbContext) => [
       auth: false,
       tags: ['api', 'heroes'],
       description: 'Busca um herói por ID',
-      notes: 'Retorna os dados de um herói específico',
       validate: {
         params: Joi.object({
           id: Joi.string().required().description('ID do herói')
@@ -91,7 +89,6 @@ export const heroRoutes = (dbContext) => [
     options: {
       tags: ['api', 'heroes'],
       description: 'Cria um novo herói',
-      notes: 'Cadastra um novo herói no sistema',
       validate: {
         payload: Joi.object({
           nome: Joi.string().max(100).required().description('Nome do herói'),
@@ -120,7 +117,6 @@ export const heroRoutes = (dbContext) => [
     options: {
       tags: ['api', 'heroes'],
       description: 'Atualiza um herói',
-      notes: 'Atualiza os dados de um herói existente',
       validate: {
         params: Joi.object({
           id: Joi.string().required().description('ID do herói')
@@ -158,7 +154,6 @@ export const heroRoutes = (dbContext) => [
     options: {
       tags: ['api', 'heroes'],
       description: 'Remove um herói',
-      notes: 'Remove um herói do sistema',
       validate: {
         params: Joi.object({
           id: Joi.string().required().description('ID do herói')

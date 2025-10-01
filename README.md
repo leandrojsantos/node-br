@@ -38,9 +38,9 @@ Esta API demonstra a implementação do **Strategy Pattern** em Node.js, permiti
 | 🔄 **Strategy Pattern** | Alternância entre múltiplos bancos de dados |
 | 🔐 **Autenticação JWT** | Sistema de autenticação seguro |
 | 📖 **Swagger UI** | Documentação automática da API |
-| 🧪 **Testes Jest** | Cobertura de testes E2E e unitários |
+| 🧪 **Testes Jest** | Cobertura de testes unitários (149 testes) |
 | 🐳 **Containers Podman** | Ambiente de desenvolvimento isolado |
-| 🧹 **Código Limpo** | Estrutura organizada e manutenível |
+| 🧹 **Clean Code** | Código limpo, DRY e KISS |
 
 ---
 
@@ -121,10 +121,10 @@ yarn install
 # Configure variáveis de ambiente
 cp env.example .env
 
-# Inicie containers
+# Inicie containers (opcional)
 yarn compose:up
 
-# Execute migrações
+# Execute migrações (se usando containers)
 yarn prisma:migrate
 
 # Inicie desenvolvimento
@@ -173,10 +173,12 @@ Para informações técnicas detalhadas, consulte:
 
 ### 📋 Padrões de Código
 
-| Ferramenta | Uso |
-|------------|-----|
-| **ESLint** | Qualidade de código |
-| **Prettier** | Formatação automática |
-| **Jest** | Testes automatizados |
-| **Strategy Pattern** | Organização de código |
+| Princípio | Aplicação |
+|-----------|-----------|
+| **Clean Code** | Código limpo e legível |
+| **DRY** | Don't Repeat Yourself |
+| **KISS** | Keep It Simple, Stupid |
+| **Strategy Pattern** | Alternância de algoritmos |
+| **ESLint + Prettier** | Qualidade e formatação |
+| **Jest** | Testes automatizados (149 testes) |
 

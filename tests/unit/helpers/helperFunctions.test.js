@@ -1,18 +1,18 @@
 /**
  * Testes unitários para Funções Auxiliares
- * 
+ *
  * Testa funções utilitárias e auxiliares
  * sem dependências externas
  */
 describe('Funções Auxiliares', () => {
-  
+
   describe('StringHelper', () => {
     const StringHelper = {
       capitalize: (str) => {
         if (!str || typeof str !== 'string') return '';
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
       },
-      
+
       slugify: (str) => {
         if (!str || typeof str !== 'string') return '';
         return str
@@ -24,22 +24,22 @@ describe('Funções Auxiliares', () => {
           .replace(/[\s_-]+/g, '-')
           .replace(/^-+|-+$/g, '');
       },
-      
+
       truncate: (str, length, suffix = '...') => {
         if (!str || typeof str !== 'string') return '';
         if (str.length <= length) return str;
         return str.substring(0, length - suffix.length) + suffix;
       },
-      
+
       maskEmail: (email) => {
         if (!email || typeof email !== 'string') return '';
         const [local, domain] = email.split('@');
         if (!local || !domain) return email;
-        
-        const maskedLocal = local.length > 2 
+
+        const maskedLocal = local.length > 2
           ? local.charAt(0) + '*'.repeat(local.length - 2) + local.charAt(local.length - 1)
           : local;
-        
+
         return `${maskedLocal}@${domain}`;
       }
     };
@@ -119,32 +119,32 @@ describe('Funções Auxiliares', () => {
     const NumberHelper = {
       formatCurrency: (value, currency = 'BRL') => {
         if (typeof value !== 'number' || isNaN(value)) return 'R$ 0,00';
-        
+
         const formatter = new Intl.NumberFormat('pt-BR', {
           style: 'currency',
-          currency: currency
+          currency
         });
-        
+
         return formatter.format(value);
       },
-      
+
       formatNumber: (value, decimals = 2) => {
         if (typeof value !== 'number' || isNaN(value)) return '0,00';
-        
+
         return value.toLocaleString('pt-BR', {
           minimumFractionDigits: decimals,
           maximumFractionDigits: decimals
         });
       },
-      
+
       randomBetween: (min, max) => {
         return Math.floor(Math.random() * (max - min + 1)) + min;
       },
-      
+
       isEven: (num) => {
         return typeof num === 'number' && num % 2 === 0;
       },
-      
+
       isOdd: (num) => {
         return typeof num === 'number' && num % 2 !== 0;
       }
@@ -224,14 +224,14 @@ describe('Funções Auxiliares', () => {
     const DateHelper = {
       formatDate: (date, format = 'DD/MM/YYYY') => {
         if (!date || !(date instanceof Date)) return '';
-        
+
         const day = date.getDate().toString().padStart(2, '0');
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear();
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
         const seconds = date.getSeconds().toString().padStart(2, '0');
-        
+
         return format
           .replace('DD', day)
           .replace('MM', month)
@@ -240,40 +240,40 @@ describe('Funções Auxiliares', () => {
           .replace('mm', minutes)
           .replace('ss', seconds);
       },
-      
+
       isToday: (date) => {
         if (!date || !(date instanceof Date)) return false;
-        
+
         const today = new Date();
         return date.toDateString() === today.toDateString();
       },
-      
+
       isWeekend: (date) => {
         if (!date || !(date instanceof Date)) return false;
-        
+
         const day = date.getDay();
         return day === 0 || day === 6; // Domingo (0) ou Sábado (6)
       },
-      
+
       addDays: (date, days) => {
         if (!date || !(date instanceof Date)) return null;
-        
+
         const result = new Date(date);
         result.setDate(result.getDate() + days);
         return result;
       },
-      
+
       getAge: (birthDate) => {
         if (!birthDate || !(birthDate instanceof Date)) return 0;
-        
+
         const today = new Date();
         let age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
-        
+
         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
           age--;
         }
-        
+
         return age;
       }
     };
@@ -298,7 +298,7 @@ describe('Funções Auxiliares', () => {
         const today = new Date();
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
-        
+
         expect(DateHelper.isToday(today)).toBe(true);
         expect(DateHelper.isToday(yesterday)).toBe(false);
       });
@@ -314,7 +314,7 @@ describe('Funções Auxiliares', () => {
         const saturday = new Date(2023, 11, 23); // 23 de dezembro de 2023 (sábado)
         const sunday = new Date(2023, 11, 24); // 24 de dezembro de 2023 (domingo)
         const monday = new Date(2023, 11, 25); // 25 de dezembro de 2023 (segunda)
-        
+
         expect(DateHelper.isWeekend(saturday)).toBe(true);
         expect(DateHelper.isWeekend(sunday)).toBe(true);
         expect(DateHelper.isWeekend(monday)).toBe(false);
@@ -325,7 +325,7 @@ describe('Funções Auxiliares', () => {
       it('deve adicionar dias corretamente', () => {
         const date = new Date(2023, 11, 25); // 25 de dezembro de 2023
         const result = DateHelper.addDays(date, 5);
-        
+
         expect(result.getDate()).toBe(30);
         expect(result.getMonth()).toBe(11); // Dezembro (0-indexed)
         expect(result.getFullYear()).toBe(2023);
@@ -341,7 +341,7 @@ describe('Funções Auxiliares', () => {
       it('deve calcular idade corretamente', () => {
         const birthDate = new Date('1990-01-01');
         const age = DateHelper.getAge(birthDate);
-        
+
         expect(age).toBeGreaterThan(30);
         expect(age).toBeLessThan(50);
       });
@@ -359,10 +359,10 @@ describe('Funções Auxiliares', () => {
         if (!Array.isArray(array)) return [];
         return [...new Set(array)];
       },
-      
+
       groupBy: (array, key) => {
         if (!Array.isArray(array)) return {};
-        
+
         return array.reduce((groups, item) => {
           const group = item[key];
           if (!groups[group]) {
@@ -372,24 +372,24 @@ describe('Funções Auxiliares', () => {
           return groups;
         }, {});
       },
-      
+
       sortBy: (array, key, order = 'asc') => {
         if (!Array.isArray(array)) return [];
-        
+
         return [...array].sort((a, b) => {
           const aVal = a[key];
           const bVal = b[key];
-          
+
           if (order === 'desc') {
             return bVal > aVal ? 1 : -1;
           }
           return aVal > bVal ? 1 : -1;
         });
       },
-      
+
       chunk: (array, size) => {
         if (!Array.isArray(array) || size <= 0) return [];
-        
+
         const chunks = [];
         for (let i = 0; i < array.length; i += size) {
           chunks.push(array.slice(i, i + size));
@@ -418,9 +418,9 @@ describe('Funções Auxiliares', () => {
           { category: 'B', value: 2 },
           { category: 'A', value: 3 }
         ];
-        
+
         const result = ArrayHelper.groupBy(data, 'category');
-        
+
         expect(result).toEqual({
           A: [{ category: 'A', value: 1 }, { category: 'A', value: 3 }],
           B: [{ category: 'B', value: 2 }]
@@ -435,9 +435,9 @@ describe('Funções Auxiliares', () => {
           { name: 'Maria', age: 25 },
           { name: 'Pedro', age: 35 }
         ];
-        
+
         const result = ArrayHelper.sortBy(data, 'age');
-        
+
         expect(result[0].name).toBe('Maria');
         expect(result[1].name).toBe('João');
         expect(result[2].name).toBe('Pedro');
@@ -449,9 +449,9 @@ describe('Funções Auxiliares', () => {
           { name: 'Maria', age: 25 },
           { name: 'Pedro', age: 35 }
         ];
-        
+
         const result = ArrayHelper.sortBy(data, 'age', 'desc');
-        
+
         expect(result[0].name).toBe('Pedro');
         expect(result[1].name).toBe('João');
         expect(result[2].name).toBe('Maria');
@@ -462,7 +462,7 @@ describe('Funções Auxiliares', () => {
       it('deve dividir array em chunks', () => {
         const array = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         const result = ArrayHelper.chunk(array, 3);
-        
+
         expect(result).toEqual([
           [1, 2, 3],
           [4, 5, 6],

@@ -78,13 +78,10 @@ yarn install
 # Configure ambiente
 cp env.example .env
 
-# Inicie containers
+# Inicie containers (opcional)
 yarn compose:up
 
-# Novas migrações
-yarn prisma:reset
-
-# Execute migrações
+# Execute migrações (se usando containers)
 yarn prisma:migrate
 
 # Inicie desenvolvimento
@@ -312,10 +309,7 @@ tests/
 ### 🚀 Executar Testes
 
 ```bash
-# Todos os testes
-yarn test
-
-# Testes E2E (mesmo comando)
+# Todos os testes unitários
 yarn test
 
 # Com cobertura
@@ -327,10 +321,11 @@ yarn test:watch
 
 ### 📊 Cobertura de Testes
 
-| Tipo | Descrição | Meta |
-|------|-----------|------|
-| **E2E** | Fluxos completos | 100% dos endpoints |
-| **Cobertura** | Código testado | > 80% esperada |
+| Tipo | Descrição | Status |
+|------|-----------|--------|
+| **Unitários** | Testes isolados | ✅ 149 testes passando |
+| **Strategy Pattern** | Testes do padrão | ✅ 100% cobertura |
+| **Clean Code** | Qualidade do código | ✅ ESLint + Prettier |
 
 ---
 

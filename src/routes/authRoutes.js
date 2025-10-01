@@ -10,7 +10,6 @@ export const authRoutes = (dbContext) => [
       auth: false,
       tags: ['api', 'auth'],
       description: 'Registra um novo usuário',
-      notes: 'Cria uma nova conta de usuário no sistema',
       validate: {
         payload: Joi.object({
           nome: Joi.string().max(100).required().description('Nome do usuário'),
@@ -23,7 +22,6 @@ export const authRoutes = (dbContext) => [
       try {
         const { nome, email, password } = request.payload;
 
-        // Verificar se email já existe
         const existingUser = await dbContext.findByEmail(email);
         if (existingUser.success) {
           return h.response({
@@ -32,10 +30,8 @@ export const authRoutes = (dbContext) => [
           }).code(400);
         }
 
-        // Hash da senha
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        // Criar usuário
         const result = await dbContext.create({
           nome,
           email: email.toLowerCase(),
@@ -51,8 +47,7 @@ export const authRoutes = (dbContext) => [
           }).code(400);
         }
 
-        // Remover senha da resposta
-        const { password: _, ...userWithoutPassword } = result.data;
+        const { password: _password, ...userWithoutPassword } = result.data;
 
         return h.response({
           success: true,
@@ -74,7 +69,6 @@ export const authRoutes = (dbContext) => [
       auth: false,
       tags: ['api', 'auth'],
       description: 'Autentica um usuário',
-      notes: 'Realiza login e retorna token JWT',
       validate: {
         payload: Joi.object({
           email: Joi.string().email().required().description('Email do usuário'),
@@ -86,7 +80,6 @@ export const authRoutes = (dbContext) => [
       try {
         const { email, password } = request.payload;
 
-        // Buscar usuário por email
         const result = await dbContext.findByEmail(email.toLowerCase());
         if (!result.success) {
           return h.response({
@@ -97,7 +90,6 @@ export const authRoutes = (dbContext) => [
 
         const user = result.data;
 
-        // Verificar status do usuário
         if (user.status !== 'ativo') {
           return h.response({
             success: false,
@@ -105,7 +97,6 @@ export const authRoutes = (dbContext) => [
           }).code(401);
         }
 
-        // Verificar senha
         const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword) {
           return h.response({
@@ -114,7 +105,6 @@ export const authRoutes = (dbContext) => [
           }).code(401);
         }
 
-        // Gerar token JWT
         const token = jwt.sign(
           {
             id: user.id,
@@ -124,16 +114,14 @@ export const authRoutes = (dbContext) => [
           process.env.JWT_SECRET || 'minha-chave-secreta-super-segura-2025',
           {
             expiresIn: '4h',
-            issuer: 'node-br-api',
-            audience: 'node-br-client'
+            issuer: 'api-strategy',
+            audience: 'api-client'
           }
         );
 
-        // Atualizar último login
         await dbContext.update(user.id, { ultimoLogin: new Date() });
 
-        // Remover senha da resposta
-        const { password: _, ...userWithoutPassword } = user;
+        const { password: _password, ...userWithoutPassword } = user;
 
         return h.response({
           success: true,

@@ -1,18 +1,18 @@
 /**
  * Testes unitários para Lógica de Negócio
- * 
+ *
  * Testa regras de negócio e algoritmos
  * sem dependências externas
  */
 describe('Lógica de Negócio', () => {
-  
+
   describe('Cálculos de Paginação', () => {
     const calculatePagination = (total, page, limit) => {
       const totalPages = Math.ceil(total / limit);
       const offset = (page - 1) * limit;
       const hasNext = page < totalPages;
       const hasPrev = page > 1;
-      
+
       return {
         total,
         page,
@@ -26,7 +26,7 @@ describe('Lógica de Negócio', () => {
 
     it('deve calcular paginação para primeira página', () => {
       const result = calculatePagination(25, 1, 10);
-      
+
       expect(result).toEqual({
         total: 25,
         page: 1,
@@ -40,7 +40,7 @@ describe('Lógica de Negócio', () => {
 
     it('deve calcular paginação para página do meio', () => {
       const result = calculatePagination(25, 2, 10);
-      
+
       expect(result).toEqual({
         total: 25,
         page: 2,
@@ -54,7 +54,7 @@ describe('Lógica de Negócio', () => {
 
     it('deve calcular paginação para última página', () => {
       const result = calculatePagination(25, 3, 10);
-      
+
       expect(result).toEqual({
         total: 25,
         page: 3,
@@ -68,7 +68,7 @@ describe('Lógica de Negócio', () => {
 
     it('deve lidar com total zero', () => {
       const result = calculatePagination(0, 1, 10);
-      
+
       expect(result).toEqual({
         total: 0,
         page: 1,
@@ -86,12 +86,12 @@ describe('Lógica de Negócio', () => {
       return data.filter(item => {
         return Object.entries(filters).every(([key, value]) => {
           if (!value) return true;
-          
+
           const itemValue = item[key];
           if (typeof itemValue === 'string') {
             return itemValue.toLowerCase().includes(value.toLowerCase());
           }
-          
+
           return itemValue === value;
         });
       });
@@ -103,9 +103,9 @@ describe('Lógica de Negócio', () => {
         { id: 2, nome: 'Maria Santos', email: 'maria@example.com' },
         { id: 3, nome: 'João Oliveira', email: 'joao.oliveira@example.com' }
       ];
-      
+
       const result = applyFilters(data, { nome: 'joão' });
-      
+
       expect(result).toHaveLength(2);
       expect(result[0].nome).toBe('João Silva');
       expect(result[1].nome).toBe('João Oliveira');
@@ -117,9 +117,9 @@ describe('Lógica de Negócio', () => {
         { id: 2, nome: 'Maria Santos', email: 'maria@example.com' },
         { id: 3, nome: 'Pedro Costa', email: 'pedro@test.com' }
       ];
-      
+
       const result = applyFilters(data, { email: 'example.com' });
-      
+
       expect(result).toHaveLength(2);
       expect(result[0].email).toBe('joao@example.com');
       expect(result[1].email).toBe('maria@example.com');
@@ -131,9 +131,9 @@ describe('Lógica de Negócio', () => {
         { id: 2, nome: 'João Santos', email: 'joao.santos@test.com', ativo: true },
         { id: 3, nome: 'Maria Silva', email: 'maria@example.com', ativo: false }
       ];
-      
+
       const result = applyFilters(data, { nome: 'joão', ativo: true });
-      
+
       expect(result).toHaveLength(2);
       expect(result.every(item => item.nome.toLowerCase().includes('joão'))).toBe(true);
       expect(result.every(item => item.ativo)).toBe(true);
@@ -144,9 +144,9 @@ describe('Lógica de Negócio', () => {
         { id: 1, nome: 'João Silva' },
         { id: 2, nome: 'Maria Santos' }
       ];
-      
+
       const result = applyFilters(data, {});
-      
+
       expect(result).toHaveLength(2);
     });
   });
@@ -156,7 +156,7 @@ describe('Lógica de Negócio', () => {
       return [...data].sort((a, b) => {
         const aValue = a[sortBy];
         const bValue = b[sortBy];
-        
+
         if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
         if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
         return 0;
@@ -169,9 +169,9 @@ describe('Lógica de Negócio', () => {
         { id: 2, nome: 'Ana' },
         { id: 3, nome: 'Bruno' }
       ];
-      
+
       const result = sortData(data, 'nome', 'asc');
-      
+
       expect(result[0].nome).toBe('Ana');
       expect(result[1].nome).toBe('Bruno');
       expect(result[2].nome).toBe('Carlos');
@@ -183,9 +183,9 @@ describe('Lógica de Negócio', () => {
         { id: 2, nome: 'Ana' },
         { id: 3, nome: 'Bruno' }
       ];
-      
+
       const result = sortData(data, 'nome', 'desc');
-      
+
       expect(result[0].nome).toBe('Carlos');
       expect(result[1].nome).toBe('Bruno');
       expect(result[2].nome).toBe('Ana');
@@ -197,9 +197,9 @@ describe('Lógica de Negócio', () => {
         { id: 1, nome: 'Ana' },
         { id: 2, nome: 'Bruno' }
       ];
-      
+
       const result = sortData(data, 'id', 'asc');
-      
+
       expect(result[0].id).toBe(1);
       expect(result[1].id).toBe(2);
       expect(result[2].id).toBe(3);
@@ -225,9 +225,9 @@ describe('Lógica de Negócio', () => {
         ativo: 1,
         createdAt: '2023-01-01T00:00:00Z'
       };
-      
+
       const result = transformUserData(userData);
-      
+
       expect(result).toEqual({
         id: 1,
         nome: 'João Silva',
@@ -241,9 +241,9 @@ describe('Lógica de Negócio', () => {
       const userData = {
         id: 1
       };
-      
+
       const result = transformUserData(userData);
-      
+
       expect(result).toEqual({
         id: 1,
         nome: undefined,
@@ -257,22 +257,22 @@ describe('Lógica de Negócio', () => {
   describe('Validação de Regras de Negócio', () => {
     const validateBusinessRules = (user) => {
       const errors = [];
-      
+
       // Regra: Nome deve ter pelo menos 2 palavras
       if (user.nome && user.nome.split(' ').length < 2) {
         errors.push('Nome deve conter pelo menos nome e sobrenome');
       }
-      
+
       // Regra: Email deve ser de domínio válido
       if (user.email && !user.email.includes('@')) {
         errors.push('Email deve conter @');
       }
-      
+
       // Regra: Idade deve ser entre 18 e 100
       if (user.idade && (user.idade < 18 || user.idade > 100)) {
         errors.push('Idade deve estar entre 18 e 100 anos');
       }
-      
+
       return errors;
     };
 
@@ -282,9 +282,9 @@ describe('Lógica de Negócio', () => {
         email: 'joao@example.com',
         idade: 25
       };
-      
+
       const errors = validateBusinessRules(validUser);
-      
+
       expect(errors).toHaveLength(0);
     });
 
@@ -294,9 +294,9 @@ describe('Lógica de Negócio', () => {
         email: 'joao@example.com',
         idade: 25
       };
-      
+
       const errors = validateBusinessRules(user);
-      
+
       expect(errors).toContain('Nome deve conter pelo menos nome e sobrenome');
     });
 
@@ -306,9 +306,9 @@ describe('Lógica de Negócio', () => {
         email: 'joao-example.com',
         idade: 25
       };
-      
+
       const errors = validateBusinessRules(user);
-      
+
       expect(errors).toContain('Email deve conter @');
     });
 
@@ -318,9 +318,9 @@ describe('Lógica de Negócio', () => {
         email: 'joao@example.com',
         idade: 17
       };
-      
+
       const errors = validateBusinessRules(user);
-      
+
       expect(errors).toContain('Idade deve estar entre 18 e 100 anos');
     });
   });

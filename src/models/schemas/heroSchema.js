@@ -1,9 +1,5 @@
 import mongoose from 'mongoose';
 
-/**
- * Schema do Mongoose para heróis
- * Define a estrutura dos dados de heróis no MongoDB
- */
 const heroSchema = new mongoose.Schema({
   nome: {
     type: String,
@@ -36,32 +32,19 @@ const heroSchema = new mongoose.Schema({
     default: []
   }
 }, {
-  timestamps: true, // Adiciona createdAt e updatedAt automaticamente
-  versionKey: false // Remove o campo __v
+  timestamps: true,
+  versionKey: false
 });
 
-// Índices para melhor performance
 heroSchema.index({ nome: 1 });
 heroSchema.index({ status: 1 });
 heroSchema.index({ nivel: 1 });
 
-// Middleware para validação personalizada
 heroSchema.pre('save', function (next) {
-  // Converte nome para lowercase para busca case-insensitive
   if (this.nome) {
     this.nome = this.nome.toLowerCase();
   }
   next();
 });
-
-// Método estático para buscar heróis ativos
-heroSchema.statics.findActive = function () {
-  return this.find({ status: 'ativo' });
-};
-
-// Método de instância para verificar se herói é ativo
-heroSchema.methods.isActive = function () {
-  return this.status === 'ativo';
-};
 
 export const HeroSchema = heroSchema;

@@ -1,11 +1,11 @@
 /**
  * Testes unitários para Strategy Pattern
- * 
+ *
  * Testa a lógica de negócio do Strategy Pattern
  * sem dependências externas (MongoDB, PostgreSQL)
  */
 describe('Strategy Pattern - Lógica de Negócio', () => {
-  
+
   describe('DatabaseContext', () => {
     let context;
     let mockStrategy;
@@ -21,7 +21,7 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
         findById: jest.fn(),
         findByEmail: jest.fn()
       };
-      
+
       // Simular o DatabaseContext
       context = {
         strategy: mockStrategy,
@@ -39,11 +39,11 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
       it('deve criar um item com dados válidos', async () => {
         const data = { nome: 'Teste', email: 'teste@example.com' };
         const expectedResult = { id: 1, ...data };
-        
+
         mockStrategy.create.mockResolvedValue(expectedResult);
-        
+
         const result = await context.create(data);
-        
+
         expect(mockStrategy.create).toHaveBeenCalledWith(data);
         expect(result).toEqual(expectedResult);
       });
@@ -57,11 +57,11 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
           limit: 10,
           totalPages: 1
         };
-        
+
         mockStrategy.read.mockResolvedValue(expectedResult);
-        
+
         const result = await context.read(filters);
-        
+
         expect(mockStrategy.read).toHaveBeenCalledWith(filters);
         expect(result).toEqual(expectedResult);
       });
@@ -70,22 +70,22 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
         const id = 1;
         const updateData = { nome: 'Item Atualizado' };
         const expectedResult = { id, ...updateData };
-        
+
         mockStrategy.update.mockResolvedValue(expectedResult);
-        
+
         const result = await context.update(id, updateData);
-        
+
         expect(mockStrategy.update).toHaveBeenCalledWith(id, updateData);
         expect(result).toEqual(expectedResult);
       });
 
       it('deve deletar um item existente', async () => {
         const id = 1;
-        
+
         mockStrategy.delete.mockResolvedValue(true);
-        
+
         const result = await context.delete(id);
-        
+
         expect(mockStrategy.delete).toHaveBeenCalledWith(id);
         expect(result).toBe(true);
       });
@@ -93,11 +93,11 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
       it('deve encontrar item por ID', async () => {
         const id = 1;
         const expectedResult = { id, nome: 'Item 1' };
-        
+
         mockStrategy.findById.mockResolvedValue(expectedResult);
-        
+
         const result = await context.findById(id);
-        
+
         expect(mockStrategy.findById).toHaveBeenCalledWith(id);
         expect(result).toEqual(expectedResult);
       });
@@ -105,11 +105,11 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
       it('deve encontrar item por email', async () => {
         const email = 'teste@example.com';
         const expectedResult = { id: 1, email };
-        
+
         mockStrategy.findByEmail.mockResolvedValue(expectedResult);
-        
+
         const result = await context.findByEmail(email);
-        
+
         expect(mockStrategy.findByEmail).toHaveBeenCalledWith(email);
         expect(result).toEqual(expectedResult);
       });
@@ -118,28 +118,28 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
     describe('Validações de Negócio', () => {
       it('deve validar dados obrigatórios na criação', async () => {
         const invalidData = { nome: '' }; // nome vazio
-        
+
         mockStrategy.create.mockRejectedValue(new Error('Nome é obrigatório'));
-        
+
         await expect(context.create(invalidData)).rejects.toThrow('Nome é obrigatório');
       });
 
       it('deve validar ID na atualização', async () => {
         const invalidId = null;
         const updateData = { nome: 'Teste' };
-        
+
         mockStrategy.update.mockRejectedValue(new Error('ID é obrigatório'));
-        
+
         await expect(context.update(invalidId, updateData)).rejects.toThrow('ID é obrigatório');
       });
 
       it('deve retornar null para item não encontrado', async () => {
         const id = 999;
-        
+
         mockStrategy.findById.mockResolvedValue(null);
-        
+
         const result = await context.findById(id);
-        
+
         expect(result).toBeNull();
       });
     });
@@ -154,11 +154,11 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
           limit: 5,
           totalPages: 5 // Math.ceil(23/5) = 5
         };
-        
+
         mockStrategy.read.mockResolvedValue(expectedResult);
-        
+
         const result = await context.read(filters);
-        
+
         expect(result.totalPages).toBe(5);
         expect(result.data).toHaveLength(5);
       });
@@ -172,11 +172,11 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
           limit: 10,
           totalPages: 0
         };
-        
+
         mockStrategy.read.mockResolvedValue(expectedResult);
-        
+
         const result = await context.read(filters);
-        
+
         expect(result.page).toBe(1);
         expect(result.limit).toBe(10);
       });
@@ -190,24 +190,24 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
         'user.name@domain.co.uk',
         'user+tag@example.org'
       ];
-      
+
       const invalidEmails = [
         'email-invalido',
         '@domain.com',
         'user@',
         'user@domain'
       ];
-      
+
       // Função de validação simples
       const isValidEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
       };
-      
+
       validEmails.forEach(email => {
         expect(isValidEmail(email)).toBe(true);
       });
-      
+
       invalidEmails.forEach(email => {
         expect(isValidEmail(email)).toBe(false);
       });
@@ -215,7 +215,7 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
 
     it('deve validar campos obrigatórios', () => {
       const requiredFields = ['nome', 'email'];
-      
+
       // Função de validação simples
       const validateRequiredFields = (data, fields) => {
         const errors = [];
@@ -226,10 +226,10 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
         });
         return errors;
       };
-      
+
       const validData = { nome: 'João', email: 'joao@example.com' };
       const invalidData = { nome: '', email: 'joao@example.com' };
-      
+
       expect(validateRequiredFields(validData, requiredFields)).toHaveLength(0);
       expect(validateRequiredFields(invalidData, requiredFields)).toContain('nome é obrigatório');
     });
@@ -241,7 +241,7 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
         if (value.length > max) return `${value} muito longo (máximo ${max} caracteres)`;
         return null;
       };
-      
+
       expect(validateFieldLength('João', 2, 50)).toBeNull();
       expect(validateFieldLength('A', 2, 50)).toContain('muito curto');
       expect(validateFieldLength('A'.repeat(51), 2, 50)).toContain('muito longo');
@@ -257,15 +257,15 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
         password: 'senha123',
         createdAt: new Date()
       };
-      
+
       // Função de transformação simples
       const sanitizeUser = (user) => {
         const { password, ...sanitized } = user;
         return sanitized;
       };
-      
+
       const result = sanitizeUser(userData);
-      
+
       expect(result).not.toHaveProperty('password');
       expect(result).toHaveProperty('id', 1);
       expect(result).toHaveProperty('nome', 'João');
@@ -278,7 +278,7 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
         { id: 2, nome: 'Item 2' },
         { id: 3, nome: 'Item 3' }
       ];
-      
+
       // Função de formatação simples
       const formatPaginatedResponse = (data, page, limit, total) => {
         return {
@@ -289,9 +289,9 @@ describe('Strategy Pattern - Lógica de Negócio', () => {
           totalPages: Math.ceil(total / limit)
         };
       };
-      
+
       const result = formatPaginatedResponse(rawData, 1, 10, 25);
-      
+
       expect(result).toEqual({
         data: rawData,
         total: 25,

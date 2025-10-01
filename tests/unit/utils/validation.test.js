@@ -1,11 +1,11 @@
 /**
  * Testes unitários para Utilitários de Validação
- * 
+ *
  * Testa funções de validação e transformação de dados
  * sem dependências externas
  */
 describe('Utilitários de Validação', () => {
-  
+
   describe('Validação de Email', () => {
     const isValidEmail = (email) => {
       if (!email || typeof email !== 'string') return false;
@@ -20,7 +20,7 @@ describe('Utilitários de Validação', () => {
         'user+tag@example.org',
         'test123@test-domain.com'
       ];
-      
+
       validEmails.forEach(email => {
         expect(isValidEmail(email)).toBe(true);
       });
@@ -38,7 +38,7 @@ describe('Utilitários de Validação', () => {
         null,
         undefined
       ];
-      
+
       invalidEmails.forEach(email => {
         expect(isValidEmail(email)).toBe(false);
       });
@@ -59,18 +59,18 @@ describe('Utilitários de Validação', () => {
     it('deve validar campos obrigatórios presentes', () => {
       const data = { nome: 'João', email: 'joao@example.com', idade: 25 };
       const requiredFields = ['nome', 'email'];
-      
+
       const errors = validateRequiredFields(data, requiredFields);
-      
+
       expect(errors).toHaveLength(0);
     });
 
     it('deve detectar campos obrigatórios ausentes', () => {
       const data = { nome: 'João', email: '' };
       const requiredFields = ['nome', 'email', 'idade'];
-      
+
       const errors = validateRequiredFields(data, requiredFields);
-      
+
       expect(errors).toContain('email é obrigatório');
       expect(errors).toContain('idade é obrigatório');
       expect(errors).not.toContain('nome é obrigatório');
@@ -79,9 +79,9 @@ describe('Utilitários de Validação', () => {
     it('deve detectar campos vazios', () => {
       const data = { nome: '   ', email: 'joao@example.com' };
       const requiredFields = ['nome', 'email'];
-      
+
       const errors = validateRequiredFields(data, requiredFields);
-      
+
       expect(errors).toContain('nome é obrigatório');
       expect(errors).not.toContain('email é obrigatório');
     });
@@ -155,9 +155,9 @@ describe('Utilitários de Validação', () => {
         token: 'jwt-token',
         createdAt: new Date()
       };
-      
+
       const result = sanitizeUser(userData);
-      
+
       expect(result).not.toHaveProperty('password');
       expect(result).toHaveProperty('id', 1);
       expect(result).toHaveProperty('nome', 'João');
@@ -171,9 +171,9 @@ describe('Utilitários de Validação', () => {
         email: 'joao@example.com',
         password: 'senha123'
       };
-      
+
       const result = sanitizeUser(userData);
-      
+
       expect(Object.keys(result)).toEqual(['id', 'nome', 'email']);
     });
   });
@@ -194,9 +194,9 @@ describe('Utilitários de Validação', () => {
         { id: 1, nome: 'Item 1' },
         { id: 2, nome: 'Item 2' }
       ];
-      
+
       const result = formatPaginatedResponse(data, 1, 10, 25);
-      
+
       expect(result).toEqual({
         data,
         total: 25,
@@ -217,19 +217,19 @@ describe('Utilitários de Validação', () => {
   describe('Validação de Paginação', () => {
     const validatePagination = (page, limit) => {
       const errors = [];
-      
+
       if (!page || page < 1) {
         errors.push('Página deve ser maior que 0');
       }
-      
+
       if (!limit || limit < 1) {
         errors.push('Limite deve ser maior que 0');
       }
-      
+
       if (limit > 100) {
         errors.push('Limite máximo é 100');
       }
-      
+
       return errors;
     };
 

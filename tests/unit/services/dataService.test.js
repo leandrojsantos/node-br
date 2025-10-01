@@ -1,17 +1,17 @@
 /**
  * Testes unitários para Serviços de Dados
- * 
+ *
  * Testa serviços de manipulação e transformação de dados
  * sem dependências externas
  */
 describe('Serviços de Dados', () => {
-  
+
   describe('DataService', () => {
     const DataService = {
       // Simular serviço de dados
       normalizeData: (data) => {
         if (!data || typeof data !== 'object') return {};
-        
+
         const normalized = {};
         Object.entries(data).forEach(([key, value]) => {
           if (value !== null && value !== undefined) {
@@ -39,24 +39,24 @@ describe('Serviços de Dados', () => {
         const errors = [];
         Object.entries(schema).forEach(([field, rules]) => {
           const value = data[field];
-          
+
           if (rules.required && (!value || value === '')) {
             errors.push(`${field} é obrigatório`);
           }
-          
+
           if (value && rules.minLength && value.length < rules.minLength) {
             errors.push(`${field} deve ter pelo menos ${rules.minLength} caracteres`);
           }
-          
+
           if (value && rules.maxLength && value.length > rules.maxLength) {
             errors.push(`${field} deve ter no máximo ${rules.maxLength} caracteres`);
           }
-          
+
           if (value && rules.pattern && !rules.pattern.test(value)) {
             errors.push(`${field} tem formato inválido`);
           }
         });
-        
+
         return {
           isValid: errors.length === 0,
           errors
@@ -71,9 +71,9 @@ describe('Serviços de Dados', () => {
           email: 'joao@example.com',
           idade: 25
         };
-        
+
         const result = DataService.normalizeData(data);
-        
+
         expect(result).toEqual({
           nome: 'João Silva',
           email: 'joao@example.com',
@@ -88,9 +88,9 @@ describe('Serviços de Dados', () => {
           idade: undefined,
           ativo: true
         };
-        
+
         const result = DataService.normalizeData(data);
-        
+
         expect(result).toEqual({
           nome: 'João',
           ativo: true
@@ -109,9 +109,9 @@ describe('Serviços de Dados', () => {
       it('deve mesclar dados corretamente', () => {
         const base = { nome: 'João', idade: 25 };
         const updates = { email: 'joao@example.com', idade: 26 };
-        
+
         const result = DataService.mergeData(base, updates);
-        
+
         expect(result).toEqual({
           nome: 'João',
           email: 'joao@example.com',
@@ -122,9 +122,9 @@ describe('Serviços de Dados', () => {
       it('deve sobrescrever campos existentes', () => {
         const base = { nome: 'João', ativo: true };
         const updates = { nome: 'Maria', ativo: false };
-        
+
         const result = DataService.mergeData(base, updates);
-        
+
         expect(result).toEqual({
           nome: 'Maria',
           ativo: false
@@ -134,9 +134,9 @@ describe('Serviços de Dados', () => {
       it('deve lidar com objetos vazios', () => {
         const base = { nome: 'João' };
         const updates = {};
-        
+
         const result = DataService.mergeData(base, updates);
-        
+
         expect(result).toEqual({ nome: 'João' });
       });
     });
@@ -150,10 +150,10 @@ describe('Serviços de Dados', () => {
           password: 'senha123',
           createdAt: new Date()
         };
-        
+
         const fields = ['id', 'nome', 'email'];
         const result = DataService.filterData(data, fields);
-        
+
         expect(result).toEqual({
           id: 1,
           nome: 'João',
@@ -164,9 +164,9 @@ describe('Serviços de Dados', () => {
       it('deve ignorar campos inexistentes', () => {
         const data = { nome: 'João', email: 'joao@example.com' };
         const fields = ['nome', 'idade', 'telefone'];
-        
+
         const result = DataService.filterData(data, fields);
-        
+
         expect(result).toEqual({
           nome: 'João'
         });
@@ -175,9 +175,9 @@ describe('Serviços de Dados', () => {
       it('deve retornar objeto vazio para campos vazios', () => {
         const data = { nome: 'João' };
         const fields = [];
-        
+
         const result = DataService.filterData(data, fields);
-        
+
         expect(result).toEqual({});
       });
     });
@@ -195,9 +195,9 @@ describe('Serviços de Dados', () => {
           email: 'joao@example.com',
           idade: '25'
         };
-        
+
         const result = DataService.validateData(data, schema);
-        
+
         expect(result.isValid).toBe(true);
         expect(result.errors).toHaveLength(0);
       });
@@ -207,9 +207,9 @@ describe('Serviços de Dados', () => {
           nome: 'João Silva'
           // email ausente
         };
-        
+
         const result = DataService.validateData(data, schema);
-        
+
         expect(result.isValid).toBe(false);
         expect(result.errors).toContain('email é obrigatório');
       });
@@ -219,9 +219,9 @@ describe('Serviços de Dados', () => {
           nome: 'J', // muito curto
           email: 'joao@example.com'
         };
-        
+
         const result = DataService.validateData(data, schema);
-        
+
         expect(result.isValid).toBe(false);
         expect(result.errors).toContain('nome deve ter pelo menos 2 caracteres');
       });
@@ -231,9 +231,9 @@ describe('Serviços de Dados', () => {
           nome: 'A'.repeat(51), // muito longo
           email: 'joao@example.com'
         };
-        
+
         const result = DataService.validateData(data, schema);
-        
+
         expect(result.isValid).toBe(false);
         expect(result.errors).toContain('nome deve ter no máximo 50 caracteres');
       });
@@ -243,9 +243,9 @@ describe('Serviços de Dados', () => {
           nome: 'João Silva',
           email: 'email-invalido' // formato inválido
         };
-        
+
         const result = DataService.validateData(data, schema);
-        
+
         expect(result.isValid).toBe(false);
         expect(result.errors).toContain('email tem formato inválido');
       });
@@ -256,41 +256,41 @@ describe('Serviços de Dados', () => {
     const CacheService = {
       // Simular serviço de cache
       cache: new Map(),
-      
-      set: function(key, value, ttl = 300000) { // 5 minutos padrão
+
+      set(key, value, ttl = 300000) { // 5 minutos padrão
         const expiry = Date.now() + ttl;
         this.cache.set(key, { value, expiry });
       },
-      
-      get: function(key) {
+
+      get(key) {
         const item = this.cache.get(key);
         if (!item) return null;
-        
+
         if (Date.now() > item.expiry) {
           this.cache.delete(key);
           return null;
         }
-        
+
         return item.value;
       },
-      
-      delete: function(key) {
+
+      delete(key) {
         return this.cache.delete(key);
       },
-      
-      clear: function() {
+
+      clear() {
         this.cache.clear();
       },
-      
-      has: function(key) {
+
+      has(key) {
         const item = this.cache.get(key);
         if (!item) return false;
-        
+
         if (Date.now() > item.expiry) {
           this.cache.delete(key);
           return false;
         }
-        
+
         return true;
       }
     };
@@ -302,26 +302,26 @@ describe('Serviços de Dados', () => {
     it('deve armazenar e recuperar dados', () => {
       const key = 'user:1';
       const value = { id: 1, nome: 'João' };
-      
+
       CacheService.set(key, value);
       const result = CacheService.get(key);
-      
+
       expect(result).toEqual(value);
     });
 
     it('deve retornar null para chave inexistente', () => {
       const result = CacheService.get('inexistente');
-      
+
       expect(result).toBeNull();
     });
 
     it('deve deletar dados', () => {
       const key = 'user:1';
       const value = { id: 1, nome: 'João' };
-      
+
       CacheService.set(key, value);
       expect(CacheService.get(key)).toEqual(value);
-      
+
       CacheService.delete(key);
       expect(CacheService.get(key)).toBeNull();
     });
@@ -329,12 +329,12 @@ describe('Serviços de Dados', () => {
     it('deve verificar existência de chave', () => {
       const key = 'user:1';
       const value = { id: 1, nome: 'João' };
-      
+
       expect(CacheService.has(key)).toBe(false);
-      
+
       CacheService.set(key, value);
       expect(CacheService.has(key)).toBe(true);
-      
+
       CacheService.delete(key);
       expect(CacheService.has(key)).toBe(false);
     });
@@ -342,12 +342,12 @@ describe('Serviços de Dados', () => {
     it('deve limpar todo o cache', () => {
       CacheService.set('key1', 'value1');
       CacheService.set('key2', 'value2');
-      
+
       expect(CacheService.has('key1')).toBe(true);
       expect(CacheService.has('key2')).toBe(true);
-      
+
       CacheService.clear();
-      
+
       expect(CacheService.has('key1')).toBe(false);
       expect(CacheService.has('key2')).toBe(false);
     });
@@ -361,7 +361,7 @@ describe('Serviços de Dados', () => {
         data,
         timestamp: new Date().toISOString()
       }),
-      
+
       error: (message, code = 400, details = null) => ({
         success: false,
         message,
@@ -369,7 +369,7 @@ describe('Serviços de Dados', () => {
         details,
         timestamp: new Date().toISOString()
       }),
-      
+
       paginated: (data, total, page, limit) => ({
         success: true,
         data,
@@ -386,7 +386,7 @@ describe('Serviços de Dados', () => {
     it('deve criar resposta de sucesso', () => {
       const data = { id: 1, nome: 'João' };
       const result = ResponseService.success(data, 'Usuário criado');
-      
+
       expect(result).toEqual({
         success: true,
         message: 'Usuário criado',
@@ -397,7 +397,7 @@ describe('Serviços de Dados', () => {
 
     it('deve criar resposta de erro', () => {
       const result = ResponseService.error('Dados inválidos', 400, { field: 'email' });
-      
+
       expect(result).toEqual({
         success: false,
         message: 'Dados inválidos',
@@ -410,7 +410,7 @@ describe('Serviços de Dados', () => {
     it('deve criar resposta paginada', () => {
       const data = [{ id: 1 }, { id: 2 }];
       const result = ResponseService.paginated(data, 25, 1, 10);
-      
+
       expect(result).toEqual({
         success: true,
         data,

@@ -9,21 +9,21 @@ export class PrismaStrategy {
     try {
       await this.client.$queryRaw`SELECT 1`;
       return true;
-    } catch (_) {
+    } catch {
       return false;
     }
   }
 
   async create(data) {
     const user = await this.client.user.create({ data });
-    const { password, ...rest } = user;
+    const { password: _, ...rest } = user;
     return { success: true, data: rest, message: 'Usuário criado com sucesso' };
   }
 
   async read(query = {}) {
     const users = await this.client.user.findMany({ where: query });
     const sanitized = users.map((u) => {
-      const { password, ...rest } = u;
+      const { password: _, ...rest } = u;
       return rest;
     });
     return { success: true, data: sanitized, message: 'Usuários encontrados com sucesso' };
@@ -50,7 +50,7 @@ export class PrismaStrategy {
         where: { id: Number(id) },
         data
       });
-      const { password, ...rest } = user;
+      const { password: _, ...rest } = user;
       return { success: true, data: rest, message: 'Usuário atualizado com sucesso' };
     } catch (error) {
       if (error?.code === 'P2025') {
